@@ -10,7 +10,8 @@ const {
   approveRequest,
   deleteCompletionRequest,
   getTeachingStats,
-  updateCompletionRequest
+  updateCompletionRequest,
+  requestRevision
 } = require('../controllers/completionRequestController');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const { handleValidationErrors } = require('../middleware/validation');

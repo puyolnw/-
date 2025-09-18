@@ -604,13 +604,24 @@ const evaluateCompletionRequest = async (req, res) => {
       });
     }
 
-    // อัปเดตการประเมิน - ครูพี่เลี้ยงประเมินเสร็จแล้ว เปลี่ยนสถานะเป็น under_review เพื่อรออาจารย์นิเทศ
+    // อัปเดตการประเมิน - ใช้ status ที่ส่งมาจาก frontend
+    let finalStatus = status;
+    
+    // ถ้าผ่าน ให้ส่งไปรออาจารย์นิเทศ
+    if (status === 'approved') {
+      finalStatus = 'under_review';
+    }
+    // ถ้าไม่ผ่าน ให้เป็น rejected
+    else if (status === 'rejected') {
+      finalStatus = 'rejected';
+    }
+    
     const updateQuery = `
       UPDATE completion_requests 
-      SET teacher_comments = ?, teacher_rating = ?, teacher_reviewed_at = NOW(), status = 'under_review'
+      SET teacher_comments = ?, teacher_rating = ?, teacher_reviewed_at = NOW(), status = ?
       WHERE id = ?
     `;
-    await pool.execute(updateQuery, [teacher_comments, teacher_rating, requestId]);
+    await pool.execute(updateQuery, [teacher_comments, teacher_rating, finalStatus, requestId]);
     
     res.json({
       success: true,

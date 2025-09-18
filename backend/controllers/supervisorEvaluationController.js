@@ -32,7 +32,7 @@ const getPendingEvaluations = async (req, res) => {
       JOIN schools s ON ia.school_id = s.school_id
       LEFT JOIN users t ON ia.teacher_id = t.id
       JOIN academic_years ay ON ia.academic_year_id = ay.id
-      WHERE cr.status = 'approved'
+      WHERE cr.status = 'under_review'
       ORDER BY cr.created_at DESC
       LIMIT ? OFFSET ?
     `, [parseInt(limit), offset]);
@@ -41,7 +41,7 @@ const getPendingEvaluations = async (req, res) => {
     const countResult = await db.query(`
       SELECT COUNT(*) as total
       FROM completion_requests cr
-      WHERE cr.status = 'approved'
+      WHERE cr.status = 'under_review'
     `);
     const total = countResult[0][0].total;
 
@@ -240,7 +240,7 @@ const evaluateRequest = async (req, res) => {
       });
     }
 
-    if (request[0].status !== 'approved') {
+    if (request[0].status !== 'under_review') {
       return res.status(400).json({
         success: false,
         message: 'คำร้องนี้ไม่สามารถประเมินได้'

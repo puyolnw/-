@@ -218,6 +218,93 @@ class CompletionRequest {
     }
   }
 
+  // อัปเดตคำร้องตาม assignment_id
+  static async updateByAssignment(studentId, assignmentId, updateData) {
+    const query = `
+      UPDATE completion_requests 
+      SET self_evaluation = ?, achievements = ?, challenges_faced = ?, 
+          skills_developed = ?, future_goals = ?, status = ?, updated_at = NOW()
+      WHERE student_id = ? AND assignment_id = ?
+    `;
+
+    try {
+      const [result] = await pool.execute(query, [
+        updateData.self_evaluation,
+        updateData.achievements,
+        updateData.challenges_faced,
+        updateData.skills_developed,
+        updateData.future_goals,
+        updateData.status,
+        studentId,
+        assignmentId
+      ]);
+
+      if (result.affectedRows > 0) {
+        // ดึงข้อมูลที่อัปเดตแล้ว
+        const [updatedRows] = await pool.execute(
+          'SELECT * FROM completion_requests WHERE student_id = ? AND assignment_id = ?',
+          [studentId, assignmentId]
+        );
+
+        return {
+          success: true,
+          data: updatedRows[0]
+        };
+      } else {
+        return {
+          success: false,
+          message: 'ไม่พบคำร้องขอสำเร็จการฝึกที่ต้องการอัปเดต'
+        };
+      }
+    } catch (error) {
+      console.error('Error updating completion request by assignment:', error);
+      throw error;
+    }
+  }
+
+  // ขอประเมินใหม่ (สำหรับกรณีที่ไม่ผ่าน)
+  static async requestRevision(id, studentId, updateData) {
+    const query = `
+      UPDATE completion_requests 
+      SET self_evaluation = ?, achievements = ?, challenges_faced = ?, 
+          skills_developed = ?, future_goals = ?, status = 'pending', updated_at = NOW()
+      WHERE id = ? AND student_id = ? AND status IN ('rejected', 'supervisor_rejected')
+    `;
+
+    try {
+      const [result] = await pool.execute(query, [
+        updateData.self_evaluation,
+        updateData.achievements,
+        updateData.challenges_faced,
+        updateData.skills_developed,
+        updateData.future_goals,
+        id,
+        studentId
+      ]);
+
+      if (result.affectedRows > 0) {
+        // ดึงข้อมูลที่อัปเดตแล้ว
+        const [updatedRows] = await pool.execute(
+          'SELECT * FROM completion_requests WHERE id = ? AND student_id = ?',
+          [id, studentId]
+        );
+
+        return {
+          success: true,
+          data: updatedRows[0]
+        };
+      } else {
+        return {
+          success: false,
+          message: 'ไม่สามารถขอประเมินใหม่ได้ คำร้องอาจได้รับการอนุมัติแล้วหรือไม่พบคำร้อง'
+        };
+      }
+    } catch (error) {
+      console.error('Error requesting revision:', error);
+      throw error;
+    }
+  }
+
   // ลบคำร้อง (เฉพาะคำร้องที่ยังไม่ได้รับการอนุมัติ)
   static async delete(id, studentId) {
     const query = `

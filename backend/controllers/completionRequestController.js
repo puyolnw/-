@@ -354,6 +354,50 @@ const updateCompletionRequest = async (req, res) => {
   }
 };
 
+// ขอประเมินใหม่ (สำหรับกรณีที่ไม่ผ่าน)
+const requestRevision = async (req, res) => {
+  try {
+    const studentId = req.user.id;
+    const { id } = req.params;
+    const {
+      self_evaluation,
+      achievements,
+      challenges_faced,
+      skills_developed,
+      future_goals
+    } = req.body;
+
+    console.log('🔵 Backend - Request revision:', { studentId, id });
+
+    const result = await CompletionRequest.requestRevision(id, studentId, {
+      self_evaluation,
+      achievements,
+      challenges_faced,
+      skills_developed,
+      future_goals
+    });
+
+    if (result.success) {
+      res.json({
+        success: true,
+        message: 'ขอประเมินใหม่เรียบร้อยแล้ว',
+        data: result.data
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: result.message || 'ไม่สามารถขอประเมินใหม่ได้'
+      });
+    }
+  } catch (error) {
+    console.error('🔵 Backend - Error requesting revision:', error);
+    res.status(500).json({
+      success: false,
+      message: 'เกิดข้อผิดพลาดในการขอประเมินใหม่'
+    });
+  }
+};
+
 module.exports = {
   createCompletionRequest,
   getStudentCompletionRequests,
@@ -364,5 +408,6 @@ module.exports = {
   approveRequest,
   deleteCompletionRequest,
   getTeachingStats,
-  updateCompletionRequest
+  updateCompletionRequest,
+  requestRevision
 };
