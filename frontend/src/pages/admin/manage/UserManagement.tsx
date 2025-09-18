@@ -27,25 +27,27 @@ const UserManagement: React.FC = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await adminApiService.getAllUsers({
+      const params = {
         page: currentPage,
-        limit: 10,
+        limit: 50, // เพิ่มจาก 10 เป็น 50
         search: searchTerm,
         role: selectedRole,
         sort: 'created_at',
         order: 'DESC'
-      });
+      };
+      
+      const response = await adminApiService.getAllUsers(params);
 
       if (response.success && response.data) {
         setUsers(response.data.users);
         setTotalUsers(response.data.pagination.totalRecords);
         setCurrentPage(response.data.pagination.currentPage);
       } else {
-        console.error('Failed to fetch users:', response.message);
+        console.error('🔴 Frontend - Failed to fetch users:', response.message);
         setUsers([]);
       }
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('🔴 Frontend - Error fetching users:', error);
       setUsers([]);
     } finally {
       setLoading(false);
@@ -63,8 +65,9 @@ const UserManagement: React.FC = () => {
   // ใช้ข้อมูลจาก API แทน mock data
   const filteredUsers = users; // API จัดการ filter แล้ว
 
+  // สร้าง stats จากข้อมูลที่ได้รับจาก API (เฉพาะหน้าที่แสดง)
   const stats = {
-    total: totalUsers,
+    total: totalUsers, // ใช้ totalUsers จาก pagination
     students: users.filter(u => u.role === 'student').length,
     teachers: users.filter(u => u.role === 'teacher').length,
     supervisors: users.filter(u => u.role === 'supervisor').length,

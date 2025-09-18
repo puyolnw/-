@@ -8,6 +8,8 @@ const getAllUsers = async (req, res) => {
   try {
     const { page = 1, limit = 10, role, search, sortBy = 'created_at', sortOrder = 'desc' } = req.query;
     
+    console.log('🔵 Backend - getAllUsers called with query:', req.query);
+    
     const offset = (page - 1) * limit;
     let whereClause = '';
     const queryParams = [];
@@ -56,11 +58,14 @@ const getAllUsers = async (req, res) => {
     queryParams.push(parseInt(limit), parseInt(offset));
     const [users] = await pool.execute(usersQuery, queryParams);
 
+    console.log('🔵 Backend - Users query result:', users.length, 'users');
+    console.log('🔵 Backend - Total count:', total);
+
     // Calculate pagination info
     const totalPages = Math.ceil(total / limit);
     const currentPage = parseInt(page);
 
-    res.json({
+    const response = {
       success: true,
       data: {
         users,
@@ -73,7 +78,10 @@ const getAllUsers = async (req, res) => {
           hasPrevPage: currentPage > 1
         }
       }
-    });
+    };
+
+    console.log('🔵 Backend - Response data:', response.data);
+    res.json(response);
 
   } catch (error) {
     console.error('Get all users error:', error);

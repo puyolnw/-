@@ -19,6 +19,7 @@ const UserTable: React.FC<UserTableProps> = ({
   onEdit,
   onDelete,
 }) => {
+
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,6 +90,7 @@ const UserTable: React.FC<UserTableProps> = ({
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentUsers = sortedUsers.slice(startIndex, endIndex);
+
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) {

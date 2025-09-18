@@ -76,63 +76,26 @@ interface ReportsData {
   detailed_data: any[];
 }
 
-interface FilterOptions {
-  academic_years: any[];
-  schools: any[];
-  date_range: {
-    min_date: string;
-    max_date: string;
-  };
-}
 
 const AdminReports: React.FC = () => {
   const [reportsData, setReportsData] = useState<ReportsData | null>(null);
-  const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Filter states
-  const [filters, setFilters] = useState({
-    academic_year_id: '',
-    school_id: '',
-    start_date: '',
-    end_date: '',
-    report_type: 'overview'
-  });
+  
+  // Simple filter states
+  const [filterSchool, setFilterSchool] = useState<string>('');
+  const [filterStatus, setFilterStatus] = useState<string>('');
 
   useEffect(() => {
-    fetchFilterOptions();
     fetchReports();
   }, []);
-
-  useEffect(() => {
-    fetchReports();
-  }, [filters]);
-
-  const fetchFilterOptions = async () => {
-    try {
-      const response = await adminApiService.getFilterOptions();
-      if (response.success && response.data) {
-        setFilterOptions(response.data);
-      }
-    } catch (error) {
-      console.error('Error fetching filter options:', error);
-    }
-  };
 
   const fetchReports = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const params: any = {};
-      if (filters.academic_year_id) params.academic_year_id = parseInt(filters.academic_year_id);
-      if (filters.school_id) params.school_id = parseInt(filters.school_id);
-      if (filters.start_date) params.start_date = filters.start_date;
-      if (filters.end_date) params.end_date = filters.end_date;
-      if (filters.report_type) params.report_type = filters.report_type;
-
-      const response = await adminApiService.getReports(params);
+      const response = await adminApiService.getReports();
       
       if (response.success && response.data) {
         setReportsData(response.data);
@@ -140,27 +103,30 @@ const AdminReports: React.FC = () => {
         setError(response.message || 'ไม่สามารถดึงข้อมูลรายงานได้');
       }
     } catch (error) {
-      console.error('Error fetching reports:', error);
+      console.error('🔴 Frontend - Error fetching reports:', error);
       setError('เกิดข้อผิดพลาดในการดึงข้อมูลรายงาน');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFilterChange = (key: string, value: string) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value
-    }));
+  // Get unique schools from detailed_data
+  const getUniqueSchools = () => {
+    if (!reportsData?.detailed_data) return [];
+    const schools = reportsData.detailed_data
+      .map(item => item.school_name)
+      .filter((school, index, self) => school && self.indexOf(school) === index);
+    return schools;
   };
 
-  const resetFilters = () => {
-    setFilters({
-      academic_year_id: '',
-      school_id: '',
-      start_date: '',
-      end_date: '',
-      report_type: 'overview'
+  // Filter detailed data based on simple filters
+  const getFilteredDetailedData = () => {
+    if (!reportsData?.detailed_data) return [];
+    
+    return reportsData.detailed_data.filter(item => {
+      const schoolMatch = !filterSchool || item.school_name === filterSchool;
+      const statusMatch = !filterStatus || item.internship_status === filterStatus;
+      return schoolMatch && statusMatch;
     });
   };
 
@@ -356,72 +322,7 @@ const AdminReports: React.FC = () => {
           <p className="text-blue-100">รายงานข้อมูลทั้งหมดในระบบฝึกประสบการณ์วิชาชีพ</p>
         </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">ตัวกรองข้อมูล</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">ปีการศึกษา</label>
-              <select
-                value={filters.academic_year_id}
-                onChange={(e) => handleFilterChange('academic_year_id', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">ทั้งหมด</option>
-                {filterOptions?.academic_years.map((year) => (
-                  <option key={year.id} value={year.id}>
-                    {year.year} ({year.semester})
-                  </option>
-                ))}
-              </select>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">โรงเรียน</label>
-              <select
-                value={filters.school_id}
-                onChange={(e) => handleFilterChange('school_id', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">ทั้งหมด</option>
-                {filterOptions?.schools.map((school) => (
-                  <option key={school.id} value={school.id}>
-                    {school.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">วันที่เริ่มต้น</label>
-              <input
-                type="date"
-                value={filters.start_date}
-                onChange={(e) => handleFilterChange('start_date', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">วันที่สิ้นสุด</label>
-              <input
-                type="date"
-                value={filters.end_date}
-                onChange={(e) => handleFilterChange('end_date', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div className="flex items-end">
-              <button
-                onClick={resetFilters}
-                className="w-full bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200"
-              >
-                รีเซ็ต
-              </button>
-            </div>
-          </div>
-        </div>
 
         {/* Overview Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -610,7 +511,52 @@ const AdminReports: React.FC = () => {
 
         {/* Detailed Data Table */}
         <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">รายละเอียดข้อมูลนักศึกษา</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-gray-900">รายละเอียดข้อมูลนักศึกษา</h2>
+            <div className="flex gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">โรงเรียน</label>
+                <select
+                  value={filterSchool}
+                  onChange={(e) => setFilterSchool(e.target.value)}
+                  className="px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                >
+                  <option value="">ทั้งหมด</option>
+                  {getUniqueSchools().map((school) => (
+                    <option key={school} value={school}>
+                      {school}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">สถานะ</label>
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                >
+                  <option value="">ทั้งหมด</option>
+                  <option value="active">กำลังฝึก</option>
+                  <option value="completed">เสร็จสิ้น</option>
+                  <option value="null">ยังไม่ได้ลงทะเบียน</option>
+                </select>
+              </div>
+
+              <div className="flex items-end">
+                <button
+                  onClick={() => {
+                    setFilterSchool('');
+                    setFilterStatus('');
+                  }}
+                  className="bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600 transition-colors duration-200 text-sm"
+                >
+                  รีเซ็ต
+                </button>
+              </div>
+            </div>
+          </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -625,7 +571,7 @@ const AdminReports: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {reportsData.detailed_data.map((student) => (
+                {getFilteredDetailedData().map((student) => (
                   <tr key={student.student_id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>

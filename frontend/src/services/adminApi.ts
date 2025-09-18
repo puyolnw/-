@@ -96,23 +96,9 @@ class AdminApiService {
   }
 
   // Reports
-  async getReports(params?: {
-    academic_year_id?: number;
-    school_id?: number;
-    start_date?: string;
-    end_date?: string;
-    report_type?: string;
-  }): Promise<{ success: boolean; data?: any; message?: string }> {
+  async getReports(): Promise<{ success: boolean; data?: any; message?: string }> {
     try {
-      const queryParams = new URLSearchParams();
-      if (params?.academic_year_id) queryParams.append('academic_year_id', params.academic_year_id.toString());
-      if (params?.school_id) queryParams.append('school_id', params.school_id.toString());
-      if (params?.start_date) queryParams.append('start_date', params.start_date);
-      if (params?.end_date) queryParams.append('end_date', params.end_date);
-      if (params?.report_type) queryParams.append('report_type', params.report_type);
-
-      const url = `/admin/reports${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-      const response = await apiService.get(url);
+      const response = await apiService.get('/admin/reports');
       return response;
     } catch (error: any) {
       console.error('Error fetching admin reports:', error);
@@ -123,18 +109,6 @@ class AdminApiService {
     }
   }
 
-  async getFilterOptions(): Promise<{ success: boolean; data?: any; message?: string }> {
-    try {
-      const response = await apiService.get('/admin/reports/filter-options');
-      return response;
-    } catch (error: any) {
-      console.error('Error fetching filter options:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'ไม่สามารถดึงข้อมูลตัวเลือกกรองได้'
-      };
-    }
-  }
 
   // User Management
   async getAllUsers(params?: {
@@ -158,7 +132,7 @@ class AdminApiService {
       const response = await apiService.get(url);
       return response;
     } catch (error: any) {
-      console.error('Error fetching users:', error);
+      console.error('🔴 Frontend - Error fetching users:', error);
       return {
         success: false,
         message: error.response?.data?.message || 'ไม่สามารถดึงข้อมูลผู้ใช้ได้'
