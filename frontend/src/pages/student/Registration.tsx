@@ -9,7 +9,7 @@ import apiService from '../../services/api';
 
 const Registration: React.FC = () => {
   const navigate = useNavigate();
-  const { refreshStatus } = useStudentStatusContext();
+  const { status, refreshStatus } = useStudentStatusContext();
   const [schools, setSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -35,29 +35,38 @@ const Registration: React.FC = () => {
 
   const fetchSchools = async (page = 1, search = '') => {
     try {
+      console.log('🔵 Frontend - fetchSchools called with:', { page, search });
       setLoading(true);
       setError(null);
 
-      // Parameters handled by studentApiService
-
-      const response = await studentApiService.getAvailableSchools({
+      const params = {
         page,
         limit: 12,
         search: search || undefined,
         academic_year_id: selectedAcademicYearId || activeAcademicYearId || 3
-      });
+      };
+      
+      console.log('🔵 Frontend - fetchSchools params:', params);
+
+      const response = await studentApiService.getAvailableSchools(params);
+      console.log('🔵 Frontend - fetchSchools response:', response);
 
       if (response.success && response.data) {
+        console.log('🔵 Frontend - fetchSchools data:', response.data);
+        console.log('🔵 Frontend - Schools count:', response.data.schools?.length);
+        console.log('🔵 Frontend - Pagination:', response.data.pagination);
+        
         setSchools(response.data.schools);
         setCurrentPage(response.data.pagination.page);
         setTotalPages(response.data.pagination.totalPages);
         setHasNext(response.data.pagination.hasNext);
         setHasPrev(response.data.pagination.hasPrev);
       } else {
+        console.log('🔴 Frontend - fetchSchools failed:', response);
         throw new Error(response.message || 'Failed to fetch schools');
       }
     } catch (error: any) {
-      console.error('Error fetching schools:', error);
+      console.error('🔴 Frontend - Error fetching schools:', error);
       setError(error.message || 'ไม่สามารถโหลดข้อมูลโรงเรียนได้');
       setSchools([]);
     } finally {
@@ -69,23 +78,30 @@ const Registration: React.FC = () => {
   useEffect(() => {
     const fetchAcademicYears = async () => {
       try {
+        console.log('🔵 Frontend - fetchAcademicYears called');
         // ใช้ API เพื่อดึงข้อมูลปีการศึกษาทั้งหมด (สำหรับ student)
         const response = await apiService.get('/student/assignments/academic-years');
+        console.log('🔵 Frontend - fetchAcademicYears response:', response);
+        
         if (response.success && response.data?.academicYears) {
           const years = response.data.academicYears;
+          console.log('🔵 Frontend - Academic years:', years);
           setAcademicYears(years);
           
           // หาปีการศึกษาที่ active
           const activeYear = years.find((year: any) => year.is_active);
+          console.log('🔵 Frontend - Active academic year:', activeYear);
           if (activeYear) {
             setActiveAcademicYearId(activeYear.id);
             setSelectedAcademicYearId(activeYear.id); // เลือกปี active เป็นค่าเริ่มต้น
             updateAcademicYearInfo(activeYear);
+            console.log('🔵 Frontend - Set active academic year ID:', activeYear.id);
           }
         }
       } catch (error) {
-        console.error('Error fetching academic years:', error);
+        console.error('🔴 Frontend - Error fetching academic years:', error);
         // Fallback ใช้ id = 3 ถ้า API ไม่ทำงาน
+        console.log('🔵 Frontend - Using fallback academic year ID: 3');
         setActiveAcademicYearId(3);
         setSelectedAcademicYearId(3);
         setAcademicYearInfo({
@@ -112,8 +128,10 @@ const Registration: React.FC = () => {
 
   // เมื่อเลือกปีการศึกษาเปลี่ยน
   const handleAcademicYearChange = (yearId: number) => {
+    console.log('🔵 Frontend - handleAcademicYearChange called with yearId:', yearId);
     setSelectedAcademicYearId(yearId);
     const selectedYear = academicYears.find(year => year.id === yearId);
+    console.log('🔵 Frontend - Selected academic year:', selectedYear);
     if (selectedYear) {
       updateAcademicYearInfo(selectedYear);
     }
@@ -128,36 +146,33 @@ const Registration: React.FC = () => {
     }
   }, [selectedAcademicYearId]);
 
+  // ตรวจสอบสถานะการลงทะเบียน
+  useEffect(() => {
+    console.log('🔵 Frontend - Registration useEffect - status:', status);
+    console.log('🔵 Frontend - Registration useEffect - status.isRegistered:', status.isRegistered);
+    console.log('🔵 Frontend - Registration useEffect - status.loading:', status.loading);
+    if (status.isRegistered) {
+      console.log('🔵 Frontend - User is already registered, redirecting to dashboard');
+      // ถ้าลงทะเบียนแล้ว ให้ redirect ไปหน้า Dashboard
+      navigate('/student/dashboard');
+    }
+  }, [status.isRegistered, status.loading, navigate]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔵 Frontend - handleSearch called with searchTerm:', searchTerm);
     setCurrentPage(1);
     fetchSchools(1, searchTerm);
   };
 
   const handlePageChange = (newPage: number) => {
+    console.log('🔵 Frontend - handlePageChange called with newPage:', newPage);
     fetchSchools(newPage, searchTerm);
   };
 
   const handleSelectSchool = (school: School) => {
-    // ตรวจสอบว่าอยู่ในช่วงรับสมัครหรือไม่
-    if (academicYearInfo) {
-      const now = new Date();
-      const regStart = new Date(academicYearInfo.registration_start);
-      const regEnd = new Date(academicYearInfo.registration_end);
-      const isInRegistrationPeriod = now >= regStart && now <= regEnd;
-      
-      if (!isInRegistrationPeriod) {
-        alert(`ไม่สามารถลงทะเบียนได้ เนื่องจากอยู่นอกช่วงรับสมัคร\nช่วงรับสมัคร: ${regStart.toLocaleDateString('th-TH')} - ${regEnd.toLocaleDateString('th-TH')}`);
-        return;
-      }
-    }
-    
-    // ตรวจสอบสถานะโรงเรียน
-    if (!school.can_apply) {
-      alert('โรงเรียนนี้ไม่เปิดรับสมัครหรือเต็มแล้ว');
-      return;
-    }
-    
+    // ลดเงื่อนไขการตรวจสอบ - ให้ง่ายขึ้น
+    console.log('🔵 Frontend - School selected:', school);
     setSelectedSchool(school);
     setShowConfirmModal(true);
   };
@@ -168,10 +183,18 @@ const Registration: React.FC = () => {
     try {
       setSubmitting(true);
       
-      const response = await studentApiService.registerToSchool(
-        selectedSchool.school_id, 
-        selectedAcademicYearId || activeAcademicYearId || 3
-      );
+      console.log('🔵 Frontend - handleConfirmRegistration called');
+      console.log('🔵 Frontend - selectedSchool:', selectedSchool);
+      console.log('🔵 Frontend - activeAcademicYearId:', activeAcademicYearId);
+      console.log('🔵 Frontend - selectedAcademicYearId:', selectedAcademicYearId);
+      
+      const schoolId = selectedSchool.school_id;
+      // ใช้ปีการศึกษา 3 (ปีปัจจุบัน) เสมอ เพื่อให้ง่ายขึ้น
+      const academicYearId = 3;
+      
+      console.log('🔵 Frontend - Calling registerToSchool with:', { schoolId, academicYearId });
+      
+      const response = await studentApiService.registerToSchool(schoolId, academicYearId);
 
       if (response.success) {
         // รีเฟรช student status
@@ -195,48 +218,86 @@ const Registration: React.FC = () => {
     }
   };
 
-  const getStatusBadge = (school: School) => {
-    // เช็คช่วงรับสมัครก่อน
-    let isInRegistrationPeriod = true;
-    if (academicYearInfo) {
-      const now = new Date();
-      const regStart = new Date(academicYearInfo.registration_start);
-      const regEnd = new Date(academicYearInfo.registration_end);
-      isInRegistrationPeriod = now >= regStart && now <= regEnd;
-    }
-
-    // ถ้านอกช่วงรับสมัคร
-    if (!isInRegistrationPeriod) {
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-          นอกช่วงรับสมัคร
-        </span>
-      );
-    }
-
-    // ถ้าอยู่ในช่วงรับสมัคร ให้ดูสถานะโรงเรียน
-    if (!school.can_apply) {
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-          ปิดรับสมัคร
-        </span>
-      );
-    }
-
-    if (school.available_slots === 0) {
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-          เต็มแล้ว
-        </span>
-      );
-    }
-
+  const getStatusBadge = () => {
+    // ลดเงื่อนไข - แสดงสถานะง่ายๆ
     return (
       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
         เปิดรับสมัคร
       </span>
     );
   };
+
+  // แสดง loading หรือข้อความเมื่อได้ลงทะเบียนแล้ว
+  if (status.loading) {
+    console.log('🔵 Frontend - Registration showing loading state');
+    return (
+      <LoggedLayout currentPage="ลงทะเบียนโรงเรียน">
+        <div className="min-h-screen bg-gray-50 py-8">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white shadow rounded-lg p-8">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">กำลังตรวจสอบสถานะการลงทะเบียน...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </LoggedLayout>
+    );
+  }
+
+  if (status.isRegistered) {
+    console.log('🔵 Frontend - Registration showing already registered state');
+    console.log('🔵 Frontend - School info:', status.schoolInfo);
+    return (
+      <LoggedLayout currentPage="ลงทะเบียนโรงเรียน">
+        <div className="min-h-screen bg-gray-50 py-8">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white shadow rounded-lg p-8">
+              <div className="text-center">
+                <div className="text-green-500 mb-4">
+                  <svg className="mx-auto h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">คุณได้ลงทะเบียนโรงเรียนแล้ว!</h3>
+                <p className="text-lg text-gray-600 mb-6">
+                  คุณได้ลงทะเบียนที่ <strong>{status.schoolInfo?.school_name}</strong> แล้ว
+                </p>
+                <div className="space-x-4">
+                  <button
+                    onClick={() => navigate('/student/dashboard')}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                  >
+                    ไปยัง Dashboard
+                  </button>
+                  <button
+                    onClick={() => navigate('/student/school')}
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium"
+                  >
+                    ดูข้อมูลโรงเรียน
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </LoggedLayout>
+    );
+  }
+
+  console.log('🔵 Frontend - Registration rendering main form');
+  console.log('🔵 Frontend - Current state:', {
+    loading,
+    schools: schools.length,
+    selectedSchool,
+    activeAcademicYearId,
+    selectedAcademicYearId,
+    academicYearInfo,
+    searchTerm,
+    currentPage,
+    totalPages
+  });
 
   return (
     <LoggedLayout currentPage="ลงทะเบียนโรงเรียน">
@@ -264,21 +325,7 @@ const Registration: React.FC = () => {
                 <div className="text-xs opacity-75 mt-1">
                   รับสมัคร: {new Date(academicYearInfo.registration_start).toLocaleDateString('th-TH')} - {new Date(academicYearInfo.registration_end).toLocaleDateString('th-TH')}
                 </div>
-                {/* เช็คว่าอยู่ในช่วงรับสมัครหรือไม่ */}
-                {(() => {
-                  const now = new Date();
-                  const regStart = new Date(academicYearInfo.registration_start);
-                  const regEnd = new Date(academicYearInfo.registration_end);
-                  const isInRegistrationPeriod = now >= regStart && now <= regEnd;
-                  
-                  return (
-                    <div className={`text-xs mt-1 px-2 py-1 rounded ${
-                      isInRegistrationPeriod ? 'bg-green-500' : 'bg-red-500'
-                    }`}>
-                      {isInRegistrationPeriod ? '✅ ช่วงรับสมัคร' : '❌ นอกช่วงรับสมัคร'}
-                    </div>
-                  );
-                })()}
+                {/* ลบการแสดงสถานะช่วงรับสมัคร - ให้ง่ายขึ้น */}
               </div>
             )}
           </div>
@@ -299,17 +346,12 @@ const Registration: React.FC = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
                 {academicYears.map((year) => {
-                  const now = new Date();
-                  const regStart = new Date(year.registration_start);
-                  const regEnd = new Date(year.registration_end);
-                  const isInPeriod = now >= regStart && now <= regEnd;
                   const isActive = year.is_active === 1 || year.is_active === true;
                   
                   return (
                     <option key={year.id} value={year.id}>
                       {year.year}/{year.semester} 
                       {isActive ? ' (ปีปัจจุบัน)' : ''}
-                      {isInPeriod ? ' - ช่วงรับสมัคร' : ' - นอกช่วงรับสมัคร'}
                     </option>
                   );
                 })}
@@ -338,33 +380,7 @@ const Registration: React.FC = () => {
           </form>
         </div>
 
-        {/* Registration Period Warning */}
-        {academicYearInfo && (() => {
-          const now = new Date();
-          const regStart = new Date(academicYearInfo.registration_start);
-          const regEnd = new Date(academicYearInfo.registration_end);
-          const isInRegistrationPeriod = now >= regStart && now <= regEnd;
-          
-          if (!isInRegistrationPeriod) {
-            return (
-              <div className="bg-orange-50 border border-orange-200 text-orange-600 px-4 py-3 rounded-lg">
-                <div className="flex items-center">
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
-                  </svg>
-                  <div>
-                    <strong>นอกช่วงรับสมัคร:</strong> ปีการศึกษา {academicYearInfo.year}/{academicYearInfo.semester}
-                    <br />
-                    <span className="text-sm">
-                      ช่วงรับสมัคร: {regStart.toLocaleDateString('th-TH')} - {regEnd.toLocaleDateString('th-TH')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          }
-          return null;
-        })()}
+        {/* ลบการแสดงคำเตือนช่วงรับสมัคร - ให้ง่ายขึ้น */}
 
         {/* Error Message */}
         {error && (
@@ -400,7 +416,9 @@ const Registration: React.FC = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {schools.map((school) => (
+              {schools.map((school) => {
+                console.log('🔵 Frontend - Rendering school:', school);
+                return (
                 <div
                   key={school.school_id}
                   className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
@@ -410,7 +428,7 @@ const Registration: React.FC = () => {
                       <h3 className="text-lg font-semibold text-gray-900 flex-1">
                         {school.school_name}
                       </h3>
-                      {getStatusBadge(school)}
+                      {getStatusBadge()}
                     </div>
 
                     <div className="space-y-2 text-sm text-gray-600 mb-4">
@@ -456,41 +474,14 @@ const Registration: React.FC = () => {
 
                     <button
                       onClick={() => handleSelectSchool(school)}
-                      disabled={!school.can_apply || (() => {
-                        // เช็คช่วงรับสมัคร
-                        if (!academicYearInfo) return false;
-                        const now = new Date();
-                        const regStart = new Date(academicYearInfo.registration_start);
-                        const regEnd = new Date(academicYearInfo.registration_end);
-                        return !(now >= regStart && now <= regEnd);
-                      })()}
-                      className={`w-full py-2 px-4 rounded-lg font-medium transition-colors duration-200 ${
-                        school.can_apply && (() => {
-                          if (!academicYearInfo) return true;
-                          const now = new Date();
-                          const regStart = new Date(academicYearInfo.registration_start);
-                          const regEnd = new Date(academicYearInfo.registration_end);
-                          return now >= regStart && now <= regEnd;
-                        })()
-                          ? 'bg-primary-600 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
+                      className="w-full py-2 px-4 rounded-lg font-medium transition-colors duration-200 bg-primary-600 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
                     >
-                      {(() => {
-                        if (!school.can_apply) return 'ไม่เปิดรับสมัคร';
-                        if (!academicYearInfo) return 'เลือกโรงเรียนนี้';
-                        
-                        const now = new Date();
-                        const regStart = new Date(academicYearInfo.registration_start);
-                        const regEnd = new Date(academicYearInfo.registration_end);
-                        const isInPeriod = now >= regStart && now <= regEnd;
-                        
-                        return isInPeriod ? 'เลือกโรงเรียนนี้' : 'นอกช่วงรับสมัคร';
-                      })()}
+                      เลือกโรงเรียนนี้
                     </button>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Pagination */}

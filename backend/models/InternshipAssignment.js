@@ -102,20 +102,29 @@ class InternshipAssignment {
   // นักศึกษาสมัครเข้าโรงเรียน
   static async apply(studentId, schoolId, academicYearId) {
     try {
+      console.log('🔵 Backend - InternshipAssignment.apply called with:', { studentId, schoolId, academicYearId });
+
       // ตรวจสอบว่านักศึกษาสมัครในปีนี้แล้วหรือไม่
       const [existing] = await pool.execute(
         'SELECT id FROM internship_assignments WHERE student_id = ? AND academic_year_id = ?',
         [studentId, academicYearId]
       );
 
+      console.log('🔵 Backend - Existing assignments check:', existing);
+
       if (existing.length > 0) {
-        throw new Error('Student has already applied for this academic year');
+        console.log('🔴 Backend - Student already has assignment for this academic year');
+        throw new Error('คุณได้ลงทะเบียนโรงเรียนไปแล้วในปีการศึกษานี้ กรุณาตรวจสอบสถานะการลงทะเบียนในหน้า Dashboard');
       }
 
       // ตรวจสอบโควตาโรงเรียน
+      console.log('🔵 Backend - Checking school quota for:', { schoolId, academicYearId });
       const quotaCheck = await SchoolQuota.canAcceptStudent(schoolId, academicYearId);
       
+      console.log('🔵 Backend - Quota check result:', quotaCheck);
+      
       if (!quotaCheck.canAccept) {
+        console.log('🔴 Backend - School cannot accept student:', quotaCheck.reason);
         throw new Error(quotaCheck.reason);
       }
 

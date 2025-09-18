@@ -1146,15 +1146,6 @@ INSERT INTO `teaching_session_files` (`id`, `teaching_session_id`, `file_name`, 
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `teaching_session_overview`
--- (See below for the actual view)
---
-CREATE TABLE `teaching_session_overview` (
-);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `teaching_time_slots`
 --
 
@@ -1293,7 +1284,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `teaching_session_overview`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `teaching_session_overview`  AS  select `ts`.`id` AS `id`,`ts`.`student_id` AS `student_id`,`ts`.`lesson_plan_id` AS `lesson_plan_id`,`ts`.`subject_id` AS `subject_id`,`ts`.`teaching_date` AS `teaching_date`,`ts`.`start_time` AS `start_time`,`ts`.`end_time` AS `end_time`,(timestampdiff(MINUTE,concat(`ts`.`teaching_date`,' ',`ts`.`start_time`),concat(`ts`.`teaching_date`,' ',`ts`.`end_time`)) / 60.0) AS `duration_hours`,`ts`.`class_level` AS `class_level`,`ts`.`class_room` AS `class_room`,`ts`.`student_count` AS `student_count`,`ts`.`lesson_topic` AS `lesson_topic`,`ts`.`self_rating` AS `self_rating`,`ts`.`status` AS `status`,`lp`.`lesson_plan_name` AS `lesson_plan_name`,`lp`.`lesson_plan_code` AS `lesson_plan_code`,`s`.`subject_code` AS `subject_code`,`s`.`subject_name` AS `subject_name`,concat(`u`.`first_name`,' ',`u`.`last_name`) AS `student_name`,`u`.`student_code` AS `student_code`,count(`tsf`.`id`) AS `file_count`,`ts`.`created_at` AS `created_at`,`ts`.`updated_at` AS `updated_at` from ((((`teaching_sessions` `ts` join `lesson_plans` `lp` on((`ts`.`lesson_plan_id` = `lp`.`id`))) join `subjects` `s` on((`ts`.`subject_id` = `s`.`id`))) join `users` `u` on((`ts`.`student_id` = `u`.`id`))) left join `teaching_session_files` `tsf` on((`ts`.`id` = `tsf`.`teaching_session_id`))) group by `ts`.`id`,`lp`.`id`,`s`.`id`,`u`.`id` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `teaching_session_overview`  AS  select `ts`.`id` AS `id`,`ts`.`student_id` AS `student_id`,`ts`.`lesson_plan_id` AS `lesson_plan_id`,`ts`.`subject_id` AS `subject_id`,`ts`.`teaching_date` AS `teaching_date`,`ts`.`start_time` AS `start_time`,`ts`.`end_time` AS `end_time`,(timestampdiff(MINUTE,concat(`ts`.`teaching_date`,' ',`ts`.`start_time`),concat(`ts`.`teaching_date`,' ',`ts`.`end_time`)) / 60.0) AS `duration_hours`,`ts`.`class_level` AS `class_level`,`ts`.`class_room` AS `class_room`,`ts`.`student_count` AS `student_count`,`ts`.`lesson_topic` AS `lesson_topic`,`ts`.`self_rating` AS `self_rating`,`ts`.`status` AS `status`,`lp`.`lesson_plan_name` AS `lesson_plan_name`,`s`.`subject_code` AS `subject_code`,`s`.`subject_name` AS `subject_name`,concat(`u`.`first_name`,' ',`u`.`last_name`) AS `student_name`,`u`.`student_code` AS `student_code`,count(`tsf`.`id`) AS `file_count`,`ts`.`created_at` AS `created_at`,`ts`.`updated_at` AS `updated_at` from ((((`teaching_sessions` `ts` join `lesson_plans` `lp` on((`ts`.`lesson_plan_id` = `lp`.`id`))) join `subjects` `s` on((`ts`.`subject_id` = `s`.`id`))) join `users` `u` on((`ts`.`student_id` = `u`.`id`))) left join `teaching_session_files` `tsf` on((`ts`.`id` = `tsf`.`teaching_session_id`))) group by `ts`.`id`,`lp`.`id`,`s`.`id`,`u`.`id` ;
 
 --
 -- Indexes for dumped tables

@@ -159,27 +159,7 @@ const createUser = async (req, res) => {
     }
 
     // สร้าง user_id อัตโนมัติ
-    const rolePrefix = {
-      'student': 'STD',
-      'teacher': 'TCH',
-      'supervisor': 'SUP',
-      'admin': 'ADM'
-    };
-
-    // หา ID ถัดไป
-    const [lastUser] = await pool.execute(
-      'SELECT user_id FROM users WHERE role = ? ORDER BY id DESC LIMIT 1',
-      [role]
-    );
-
-    let nextNumber = 1;
-    if (lastUser.length > 0) {
-      const lastId = lastUser[0].user_id;
-      const lastNumber = parseInt(lastId.slice(3)); // เอาตัวเลขหลัง prefix
-      nextNumber = lastNumber + 1;
-    }
-
-    const user_id = `${rolePrefix[role]}${nextNumber.toString().padStart(3, '0')}`;
+    const user_id = await User.generateUserId(role);
 
     // สร้างข้อมูลผู้ใช้
     const userData = {

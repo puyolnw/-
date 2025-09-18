@@ -187,13 +187,22 @@ class StudentApiService {
   // ลงทะเบียนเข้าโรงเรียน (ใช้ API เดิม)
   async registerToSchool(schoolId: string, academicYearId: number): Promise<{ success: boolean; data?: any; message?: string }> {
     try {
-      const response = await apiService.post('/student/assignments/apply', {
+      console.log('🔵 Frontend - registerToSchool called with:', { schoolId, academicYearId });
+      
+      const requestData = {
         school_id: schoolId,
         academic_year_id: academicYearId
-      });
+      };
+      
+      console.log('🔵 Frontend - Sending request data:', requestData);
+      
+      const response = await apiService.post('/student/assignments/apply', requestData);
+      
+      console.log('🔵 Frontend - Response received:', response);
       return response;
     } catch (error: any) {
-      console.error('Error registering to school:', error);
+      console.error('🔴 Frontend - Error registering to school:', error);
+      console.error('🔴 Frontend - Error response:', error.response?.data);
       return {
         success: false,
         message: error.response?.data?.message || error.message || 'Registration failed'

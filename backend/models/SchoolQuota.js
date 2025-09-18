@@ -90,12 +90,12 @@ class SchoolQuota {
         return { canAccept: false, reason: 'No quota set for this school and academic year' };
       }
 
-      if (!quota.is_open) {
-        return { canAccept: false, reason: 'School is not accepting applications' };
+      if (quota.is_open !== 1) {
+        return { canAccept: false, reason: 'โรงเรียนนี้ปิดรับสมัครแล้ว' };
       }
 
       if (quota.current_students >= quota.max_students) {
-        return { canAccept: false, reason: 'School has reached maximum capacity' };
+        return { canAccept: false, reason: 'โรงเรียนนี้เต็มแล้ว ไม่สามารถรับนักศึกษาเพิ่มได้' };
       }
 
       return { 

@@ -136,6 +136,9 @@ const applyToSchool = async (req, res) => {
     const studentId = req.user.id; // จาก JWT token
     const { school_id, academic_year_id } = req.body;
 
+    console.log('🔵 Backend - applyToSchool called with:', { school_id, academic_year_id, studentId });
+    console.log('🔵 Backend - req.user:', req.user);
+
     // ตรวจสอบว่าเป็นนักศึกษาจริง
     if (req.user.role !== 'student') {
       return res.status(403).json({
@@ -143,6 +146,8 @@ const applyToSchool = async (req, res) => {
         message: 'Only students can apply to schools'
       });
     }
+
+    console.log('🔵 Backend - Calling InternshipAssignment.apply with:', { studentId, school_id, academic_year_id });
 
     const newAssignmentId = await InternshipAssignment.apply(
       studentId,
@@ -159,11 +164,15 @@ const applyToSchool = async (req, res) => {
     });
   } catch (error) {
     console.error('Apply to school error:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
     
-    if (error.message.includes('already applied') || 
+    if (error.message.includes('ลงทะเบียน') || 
         error.message.includes('quota') || 
         error.message.includes('capacity') ||
-        error.message.includes('not accepting')) {
+        error.message.includes('ไม่สามารถรับ') ||
+        error.message.includes('ปิดรับสมัคร') ||
+        error.message.includes('เต็มแล้ว')) {
       return res.status(400).json({
         success: false,
         message: error.message
@@ -172,7 +181,8 @@ const applyToSchool = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };

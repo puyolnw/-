@@ -128,6 +128,7 @@ export const StudentStatusProvider: React.FC<{ children: React.ReactNode }> = ({
   // อัปเดต loading state เมื่อ user เปลี่ยน
   useEffect(() => {
     console.log('🔄 StudentStatusProvider - User role changed:', user?.role);
+    console.log('🔄 StudentStatusProvider - Current status:', status);
     if (user?.role === 'student') {
       // ถ้าเป็น student และยังไม่มี cache ให้ตั้ง loading: true
       if (!cachedStatus || Date.now() - cacheTimestamp >= CACHE_DURATION) {

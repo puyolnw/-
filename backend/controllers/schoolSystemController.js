@@ -357,14 +357,14 @@ const assignStudent = async (req, res) => {
     if (!school.is_open) {
       return res.status(400).json({
         success: false,
-        message: 'School is not accepting new students'
+        message: 'โรงเรียนนี้ปิดรับสมัครแล้ว'
       });
     }
 
     if (school.current_students >= school.max_students) {
       return res.status(400).json({
         success: false,
-        message: 'School has reached maximum student capacity'
+        message: 'โรงเรียนนี้เต็มแล้ว ไม่สามารถรับนักศึกษาเพิ่มได้'
       });
     }
 
@@ -388,7 +388,7 @@ const assignStudent = async (req, res) => {
       await connection.rollback();
       return res.status(400).json({
         success: false,
-        message: 'Student is already assigned to this school for this academic year'
+        message: 'นักศึกษาได้ลงทะเบียนโรงเรียนนี้ไปแล้วในปีการศึกษานี้'
       });
     }
 
@@ -398,7 +398,7 @@ const assignStudent = async (req, res) => {
       await connection.rollback();
       return res.status(400).json({
         success: false,
-        message: 'School has reached maximum student capacity'
+        message: 'โรงเรียนนี้เต็มแล้ว ไม่สามารถรับนักศึกษาเพิ่มได้'
       });
     }
 

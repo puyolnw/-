@@ -28,3 +28,5 @@ ORDER BY id;
 
 -- แสดงจำนวนรายการที่แก้ไข
 SELECT ROW_COUNT() as 'Records Updated';
+
+

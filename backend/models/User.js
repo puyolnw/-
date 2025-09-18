@@ -266,20 +266,54 @@ class User {
           prefix = 'USR';
       }
 
-      // หาเลขล่าสุดของ role นั้น
-      const [rows] = await pool.execute(
-        'SELECT user_id FROM users WHERE role = ? ORDER BY user_id DESC LIMIT 1',
-        [role]
-      );
+      // ใช้ transaction เพื่อป้องกัน race condition
+      const connection = await pool.getConnection();
+      await connection.beginTransaction();
 
-      let nextNumber = 1;
-      if (rows.length > 0) {
-        const lastId = rows[0].user_id;
-        const numberPart = parseInt(lastId.substring(3));
-        nextNumber = numberPart + 1;
+      try {
+        // หาเลขล่าสุดของ role นั้น (เฉพาะที่ขึ้นต้นด้วย prefix ที่ถูกต้อง)
+        const [rows] = await connection.execute(
+          'SELECT user_id FROM users WHERE role = ? AND user_id LIKE ? ORDER BY user_id DESC LIMIT 1 FOR UPDATE',
+          [role, `${prefix}%`]
+        );
+
+        let nextNumber = 1;
+        if (rows.length > 0) {
+          const lastId = rows[0].user_id;
+          // ตรวจสอบว่า user_id มีรูปแบบที่ถูกต้อง (prefix + ตัวเลข)
+          if (lastId.startsWith(prefix) && lastId.length > prefix.length) {
+            const numberPart = parseInt(lastId.substring(prefix.length));
+            if (!isNaN(numberPart)) {
+              nextNumber = numberPart + 1;
+            }
+          }
+        }
+
+        const newUserId = `${prefix}${nextNumber.toString().padStart(3, '0')}`;
+        
+        // ตรวจสอบว่า user_id นี้มีอยู่แล้วหรือไม่
+        const [existingUser] = await connection.execute(
+          'SELECT id FROM users WHERE user_id = ?',
+          [newUserId]
+        );
+
+        if (existingUser.length > 0) {
+          // ถ้ามีอยู่แล้ว ให้เพิ่มเลขขึ้น
+          nextNumber++;
+          const finalUserId = `${prefix}${nextNumber.toString().padStart(3, '0')}`;
+          await connection.commit();
+          connection.release();
+          return finalUserId;
+        }
+
+        await connection.commit();
+        connection.release();
+        return newUserId;
+      } catch (error) {
+        await connection.rollback();
+        connection.release();
+        throw error;
       }
-
-      return `${prefix}${nextNumber.toString().padStart(3, '0')}`;
     } catch (error) {
       throw error;
     }

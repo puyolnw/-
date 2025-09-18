@@ -27,10 +27,10 @@ class ApiService {
         let token = localStorage.getItem('token');
         console.log('🔵 Frontend - API Request token:', token);
         
-        // ถ้าไม่มี token หรือ token ไม่ถูกต้อง ให้ใช้ test-token
+        // ถ้าไม่มี token หรือ token ไม่ถูกต้อง ให้ส่ง error
         if (!token || token === 'null' || token === 'undefined') {
-          token = 'test-token';
-          console.log('🔵 Frontend - Using test-token instead');
+          console.log('🔵 Frontend - No valid token found');
+          throw new Error('No authentication token found');
         }
         
         if (token) {
@@ -64,14 +64,30 @@ class ApiService {
     );
   }
 
-  // Authentication endpoints
+  // Authentication endpoints (ไม่ต้องใช้ token)
   async login(credentials: LoginRequest): Promise<AuthResponse> {
-    const response: AxiosResponse<AuthResponse> = await this.api.post('/auth/login', credentials);
+    // สร้าง axios instance แยกที่ไม่ใช้ interceptor
+    const authApi = axios.create({
+      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const response: AxiosResponse<AuthResponse> = await authApi.post('/auth/login', credentials);
     return response.data;
   }
 
   async register(userData: RegisterRequest): Promise<AuthResponse> {
-    const response: AxiosResponse<AuthResponse> = await this.api.post('/auth/register', userData);
+    // สร้าง axios instance แยกที่ไม่ใช้ interceptor
+    const authApi = axios.create({
+      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const response: AxiosResponse<AuthResponse> = await authApi.post('/auth/register', userData);
     return response.data;
   }
 
