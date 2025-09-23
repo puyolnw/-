@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Sep 18, 2025 at 10:43 AM
+-- Generation Time: Sep 23, 2025 at 12:27 PM
 -- Server version: 8.0.17
 -- PHP Version: 7.3.10
 
@@ -100,7 +100,7 @@ DELIMITER ;
 
 CREATE TABLE `academic_years` (
   `id` int(11) NOT NULL,
-  `year` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ปีการศึกษา เช่น 2567',
+  `year` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ปีการศึกษา เช่น 2567',
   `semester` tinyint(1) NOT NULL COMMENT 'ภาคเรียน 1 หรือ 2',
   `start_date` date NOT NULL COMMENT 'วันที่เริ่มภาคเรียน',
   `end_date` date NOT NULL COMMENT 'วันที่สิ้นสุดภาคเรียน',
@@ -214,7 +214,7 @@ CREATE TABLE `completion_requests` (
   `challenges_faced` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'ความท้าทายที่เผชิญ',
   `skills_developed` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'ทักษะที่พัฒนาได้',
   `future_goals` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'เป้าหมายในอนาคต',
-  `status` enum('pending','under_review','approved','rejected','revision_required','supervisor_approved','supervisor_rejected') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `status` enum('pending','under_review','approved','rejected','revision_required','supervisor_approved','supervisor_rejected') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
   `teacher_comments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'ความเห็นครูพี่เลี้ยง',
   `teacher_rating` tinyint(1) DEFAULT NULL COMMENT 'คะแนนจากครูพี่เลี้ยง (1-5)',
   `teacher_reviewed_at` timestamp NULL DEFAULT NULL COMMENT 'วันที่ครูให้ความเห็น',
@@ -247,7 +247,8 @@ CREATE TABLE `completion_requests` (
 
 INSERT INTO `completion_requests` (`id`, `student_id`, `assignment_id`, `request_date`, `total_teaching_hours`, `total_lesson_plans`, `total_teaching_sessions`, `self_evaluation`, `achievements`, `challenges_faced`, `skills_developed`, `future_goals`, `status`, `teacher_comments`, `teacher_rating`, `teacher_reviewed_at`, `supervisor_comments`, `supervisor_rating`, `supervisor_reviewed_at`, `approved_by`, `approved_date`, `rejection_reason`, `revision_notes`, `created_at`, `supervisor_criteria_1`, `supervisor_criteria_2`, `supervisor_criteria_3`, `supervisor_criteria_4`, `supervisor_criteria_5`, `supervisor_criteria_6`, `supervisor_criteria_7`, `supervisor_criteria_8`, `supervisor_criteria_9`, `supervisor_criteria_10`, `supervisor_total_score`, `supervisor_average_score`) VALUES
 (1, 18, 21, '2025-09-18 06:58:18', '25.00', 5, 8, 'ดัมาก', 'กัมากๆ', 'กัมาก', 'กัมากหฟ', 'ฟหก', 'supervisor_approved', 'good', 5, '2025-09-18 07:16:15', '555', NULL, '2025-09-18 09:10:00', NULL, NULL, NULL, NULL, '2025-09-18 04:55:20', 5, 5, 5, 5, 5, 5, 4, 4, 4, 5, 47, '4.70'),
-(2, 1, 19, '2025-09-18 05:23:43', '1.00', 1, 1, 'การฝึกสอนครั้งนี้ทำให้ได้เรียนรู้การจัดการชั้นเรียนและการสอนจริง', 'สามารถสอนนักเรียนได้อย่างมีประสิทธิภาพ', 'การจัดการพฤติกรรมนักเรียน', 'ทักษะการสื่อสารและการสอน', 'ต้องการพัฒนาทักษะการสอนให้ดีขึ้น', 'supervisor_approved', 'นักเรียนมีความตั้งใจในการสอนดีมาก สามารถจัดการชั้นเรียนได้อย่างมีประสิทธิภาพ', 4, '2025-09-18 05:25:32', '????????????', 5, '2025-09-18 08:58:24', NULL, '2025-09-18 05:25:35', NULL, NULL, '2025-09-18 05:23:43', 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 40, '4.00');
+(2, 1, 19, '2025-09-18 05:23:43', '1.00', 1, 1, 'การฝึกสอนครั้งนี้ทำให้ได้เรียนรู้การจัดการชั้นเรียนและการสอนจริง', 'สามารถสอนนักเรียนได้อย่างมีประสิทธิภาพ', 'การจัดการพฤติกรรมนักเรียน', 'ทักษะการสื่อสารและการสอน', 'ต้องการพัฒนาทักษะการสอนให้ดีขึ้น', 'supervisor_approved', 'นักเรียนมีความตั้งใจในการสอนดีมาก สามารถจัดการชั้นเรียนได้อย่างมีประสิทธิภาพ', 4, '2025-09-18 05:25:32', '????????????', 5, '2025-09-18 08:58:24', NULL, '2025-09-18 05:25:35', NULL, NULL, '2025-09-18 05:23:43', 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 40, '4.00'),
+(9, 29, 25, '2025-09-23 12:15:36', '0.00', 0, 0, 'ไม่มี', '', '', '', '', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-23 12:15:36', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Triggers `completion_requests`
@@ -340,12 +341,12 @@ INSERT INTO `conversations` (`id`, `participant_1`, `participant_2`, `last_messa
 CREATE TABLE `evaluation_criteria` (
   `id` int(11) NOT NULL,
   `evaluation_id` int(11) NOT NULL,
-  `criterion_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `criterion_description` text COLLATE utf8mb4_unicode_ci,
+  `criterion_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `criterion_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `rating` int(11) NOT NULL,
-  `feedback` text COLLATE utf8mb4_unicode_ci,
+  `feedback` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `evaluation_criteria`
@@ -367,20 +368,38 @@ INSERT INTO `evaluation_criteria` (`id`, `evaluation_id`, `criterion_name`, `cri
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `evaluation_details`
+--
+
+CREATE TABLE `evaluation_details` (
+  `id` int(11) NOT NULL,
+  `completion_request_id` int(11) NOT NULL,
+  `criteria_id` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `sub_item_id` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `sub_item_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `sub_item_description` text COLLATE utf8mb4_general_ci,
+  `rating` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `internship_assignments`
 --
 
 CREATE TABLE `internship_assignments` (
   `id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
-  `school_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `school_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `academic_year_id` int(11) NOT NULL,
   `teacher_id` int(11) DEFAULT NULL COMMENT 'ครูพี่เลี้ยงที่รับผิดชอบ',
-  `status` enum('active','completed','cancelled') COLLATE utf8mb4_unicode_ci DEFAULT 'active',
+  `status` enum('active','completed','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'active',
   `enrollment_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
-  `notes` text COLLATE utf8mb4_unicode_ci COMMENT 'หมายเหตุเพิ่มเติม',
+  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'หมายเหตุเพิ่มเติม',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -395,7 +414,9 @@ INSERT INTO `internship_assignments` (`id`, `student_id`, `school_id`, `academic
 (19, 1, 'SCH001', 3, 4, 'active', '2025-09-17 21:24:36', '2025-09-17', '2025-10-30', 'เพิ่มจากหน้า details', '2025-09-17 21:24:36'),
 (20, 17, 'SCH002', 3, NULL, 'active', '2025-09-17 22:31:31', NULL, NULL, NULL, '2025-09-17 22:31:31'),
 (21, 18, 'SCH002', 3, NULL, 'active', '2025-09-17 22:43:37', NULL, NULL, NULL, '2025-09-17 22:43:37'),
-(22, 24, 'SCH001', 3, 20, 'active', '2025-09-18 08:34:19', NULL, NULL, NULL, '2025-09-18 08:34:19');
+(22, 24, 'SCH001', 3, 20, 'active', '2025-09-18 08:34:19', NULL, NULL, NULL, '2025-09-18 08:34:19'),
+(24, 27, 'SCH001', 3, 4, 'active', '2025-09-23 10:56:05', NULL, NULL, NULL, '2025-09-23 10:56:05'),
+(25, 29, 'SCH002', 3, 5, 'active', '2025-09-23 12:09:30', NULL, NULL, NULL, '2025-09-23 12:09:30');
 
 --
 -- Triggers `internship_assignments`
@@ -524,16 +545,16 @@ CREATE TABLE `lesson_plans` (
   `student_id` int(11) NOT NULL COMMENT 'นักศึกษาเจ้าของแผน',
   `lesson_plan_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ชื่อแผนการสอน',
   `subject_id` int(11) NOT NULL COMMENT 'วิชาที่สอน',
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `objectives` text COLLATE utf8mb4_unicode_ci,
-  `teaching_methods` text COLLATE utf8mb4_unicode_ci,
-  `assessment_methods` text COLLATE utf8mb4_unicode_ci,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `objectives` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `teaching_methods` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `assessment_methods` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `duration_minutes` int(11) DEFAULT '50' COMMENT 'ระยะเวลาสอน (นาที)',
   `target_grade` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'ระดับชั้นเป้าหมาย',
-  `status` enum('active','completed','archived') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active' COMMENT 'สถานะแผน',
+  `status` enum('active','completed','archived') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active' COMMENT 'สถานะแผน',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `teacher_feedback` text COLLATE utf8mb4_unicode_ci,
+  `teacher_feedback` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `teacher_rating` int(11) DEFAULT NULL,
   `teacher_reviewed_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='ตารางแผนการสอน เก็บแผนการสอนของนักศึกษาแต่ละคน';
@@ -548,7 +569,8 @@ INSERT INTO `lesson_plans` (`id`, `student_id`, `lesson_plan_name`, `subject_id`
 (17, 18, 'ฟกหหฟ', 23, 'ฟหก', 'ฟหก', 'ฟหก', 'ฟหก', 50, NULL, 'active', '2025-09-18 01:50:01', NULL, NULL, NULL),
 (22, 1, 'แผนการสอนคณิตศาสตร์ ม.1', 1, 'การสอนเรื่องเศษส่วน', 'นักเรียนสามารถเข้าใจเศษส่วนได้', 'การบรรยายและการฝึกปฏิบัติ', 'การทดสอบและการประเมิน', 50, 'ม.1', 'active', '2025-09-18 05:18:43', NULL, NULL, NULL),
 (23, 18, 'ฟหก', 25, NULL, NULL, NULL, NULL, 111, NULL, 'active', '2025-09-18 06:46:23', NULL, NULL, NULL),
-(24, 24, 'แผนการสอนคณิตศาสตร์', 1, 'สอนการบวกเลข', 'นักเรียนสามารถบวกเลขได้', 'สอนแบบบรรยาย', 'ทดสอบการบวก', 50, 'ม.1', 'active', '2025-09-18 09:03:25', NULL, NULL, NULL);
+(24, 24, 'แผนการสอนคณิตศาสตร์', 1, 'สอนการบวกเลข', 'นักเรียนสามารถบวกเลขได้', 'สอนแบบบรรยาย', 'ทดสอบการบวก', 50, 'ม.1', 'active', '2025-09-18 09:03:25', NULL, NULL, NULL),
+(25, 27, 'วิทยาศาสตร์', 28, NULL, NULL, NULL, NULL, 50, NULL, 'active', '2025-09-23 11:31:24', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -594,7 +616,8 @@ INSERT INTO `lesson_plan_files` (`id`, `lesson_plan_id`, `file_name`, `file_path
 (17, 14, 'บทที่-3-วีระพงษ์-ล่าสุด ฉบับสมบูรณ์.pdf', 'D:\\dollar\\backend\\uploads\\lesson-plans\\files-1758161982468-108403394-บทที่-3-วีระพงษ์-ล่าสุด ฉบับสมบูรณ์.pdf', 1849924, '.pdf', 'application/pdf', 'document', '2025-09-18 02:19:42'),
 (18, 14, 'output-onlinepngtools.png', 'D:\\dollar\\backend\\uploads\\lesson-plans\\files-1758161982496-324033392-output-onlinepngtools.png', 11518, '.png', 'image/png', 'media', '2025-09-18 02:19:42'),
 (19, 23, 'บทที่-3-วีระพงษ์-ล่าสุด ฉบับสมบูรณ์.pdf', 'D:\\dollar\\backend\\uploads\\lesson-plans\\files-1758177983505-242977565-บทที่-3-วีระพงษ์-ล่าสุด ฉบับสมบูรณ์.pdf', 1849924, '.pdf', 'application/pdf', 'document', '2025-09-18 06:46:23'),
-(20, 23, 'output-onlinepngtools.png', 'D:\\dollar\\backend\\uploads\\lesson-plans\\files-1758177983559-730038072-output-onlinepngtools.png', 11518, '.png', 'image/png', 'media', '2025-09-18 06:46:23');
+(20, 23, 'output-onlinepngtools.png', 'D:\\dollar\\backend\\uploads\\lesson-plans\\files-1758177983559-730038072-output-onlinepngtools.png', 11518, '.png', 'image/png', 'media', '2025-09-18 06:46:23'),
+(21, 25, 'คู่มือการใช้งานระบบฝึกประสบการณ์วิชาชีพครู (1)  แก้ไขใหม่  19-9-2568   แก้ไขแก้ไข  ออนไลน์ (1).docx', 'C:\\Users\\Dhinotea\\work\\-\\back\\uploads\\lesson-plans\\files-1758627092921-827186687-คู่มือการใช้งานระบบฝึกประสบการณ์วิชาชีพครู (1)  แก้ไขใหม่  19-9-2568   แก้ไขแก้ไข  ออนไลน์ (1).docx', 570990, '.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'document', '2025-09-23 11:31:32');
 
 -- --------------------------------------------------------
 
@@ -609,7 +632,7 @@ CREATE TABLE `lesson_plan_materials` (
   `file_path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'path ไฟล์ในระบบ',
   `file_size` bigint(20) NOT NULL COMMENT 'ขนาดไฟล์ (bytes)',
   `file_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ประเภทไฟล์',
-  `file_category` enum('image','video','presentation','document','other') COLLATE utf8mb4_unicode_ci DEFAULT 'other' COMMENT 'หมวดหมู่ไฟล์',
+  `file_category` enum('image','video','presentation','document','other') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'other' COMMENT 'หมวดหมู่ไฟล์',
   `uploaded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -677,10 +700,10 @@ CREATE TABLE `notification_settings` (
 
 CREATE TABLE `schools` (
   `id` int(11) NOT NULL,
-  `school_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `school_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `school_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `school_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -704,14 +727,14 @@ INSERT INTO `schools` (`id`, `school_id`, `school_name`, `address`, `phone`, `cr
 
 CREATE TABLE `school_academic_schedules` (
   `id` int(11) NOT NULL,
-  `school_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `school_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `academic_year_id` int(11) NOT NULL,
   `internship_start_date` date NOT NULL COMMENT 'วันที่เริ่มฝึกงานในโรงเรียนนี้',
   `internship_end_date` date NOT NULL COMMENT 'วันที่สิ้นสุดฝึกงานในโรงเรียนนี้',
   `preparation_start_date` date DEFAULT NULL COMMENT 'วันที่เริ่มเตรียมตัว',
   `orientation_date` date DEFAULT NULL COMMENT 'วันปฐมนิเทศ',
   `evaluation_date` date DEFAULT NULL COMMENT 'วันประเมินผล',
-  `notes` text COLLATE utf8mb4_unicode_ci COMMENT 'หมายเหตุเพิ่มเติม',
+  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'หมายเหตุเพิ่มเติม',
   `created_by` int(11) NOT NULL COMMENT 'ผู้สร้าง (admin/supervisor/teacher)',
   `updated_by` int(11) DEFAULT NULL COMMENT 'ผู้แก้ไขล่าสุด',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -772,7 +795,7 @@ CREATE TABLE `school_overview` (
 
 CREATE TABLE `school_quotas` (
   `id` int(11) NOT NULL,
-  `school_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `school_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `academic_year_id` int(11) NOT NULL,
   `max_students` int(11) NOT NULL DEFAULT '0' COMMENT 'จำนวนนักศึกษาสูงสุดที่รับได้',
   `current_students` int(11) NOT NULL DEFAULT '0' COMMENT 'จำนวนนักศึกษาปัจจุบัน',
@@ -788,8 +811,8 @@ CREATE TABLE `school_quotas` (
 --
 
 INSERT INTO `school_quotas` (`id`, `school_id`, `academic_year_id`, `max_students`, `current_students`, `max_teachers`, `current_teachers`, `is_open`, `created_at`) VALUES
-(1, 'SCH001', 3, 5, 2, 3, 1, 1, '2025-09-17 17:59:16'),
-(2, 'SCH002', 3, 8, 3, 2, 1, 1, '2025-09-17 17:59:16'),
+(1, 'SCH001', 3, 5, 3, 3, 1, 1, '2025-09-17 17:59:16'),
+(2, 'SCH002', 3, 8, 4, 2, 1, 1, '2025-09-17 17:59:16'),
 (3, 'SCH003', 3, 12, 1, 4, 1, 1, '2025-09-17 17:59:16'),
 (8, 'SCH004', 3, 1, 0, 5, 0, 1, '2025-09-17 18:37:24'),
 (9, 'SCH001', 1, 15, 0, 3, 0, 0, '2025-09-17 20:15:16'),
@@ -839,7 +862,7 @@ CREATE TABLE `school_schedule_overview` (
 CREATE TABLE `school_teachers` (
   `id` int(11) NOT NULL,
   `teacher_id` int(11) NOT NULL,
-  `school_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `school_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `academic_year_id` int(11) NOT NULL,
   `is_primary` tinyint(1) DEFAULT '0' COMMENT 'ครูหลักหรือไม่',
   `max_students` int(11) DEFAULT '5' COMMENT 'จำนวนนักศึกษาสูงสุดที่ดูแลได้',
@@ -853,12 +876,12 @@ CREATE TABLE `school_teachers` (
 --
 
 INSERT INTO `school_teachers` (`id`, `teacher_id`, `school_id`, `academic_year_id`, `is_primary`, `max_students`, `current_students`, `created_at`) VALUES
-(1, 4, 'SCH001', 3, 1, 5, 2, '2025-09-17 17:59:16'),
-(2, 5, 'SCH002', 3, 1, 4, 0, '2025-09-17 17:59:16'),
-(3, 6, 'SCH003', 3, 1, 6, 1, '2025-09-17 17:59:16'),
-(4, 6, 'SCH002', 3, 0, 5, 0, '2025-09-17 20:42:02'),
-(7, 20, 'SCH001', 3, 0, 5, 1, '2025-09-18 08:34:10'),
-(8, 23, 'SCH001', 3, 0, 5, 0, '2025-09-18 08:34:31');
+(1, 4, 'SCH001', 3, 1, 20, 2, '2025-09-17 17:59:16'),
+(2, 5, 'SCH002', 3, 1, 20, 1, '2025-09-17 17:59:16'),
+(3, 6, 'SCH003', 3, 1, 20, 1, '2025-09-17 17:59:16'),
+(4, 6, 'SCH002', 3, 0, 20, 0, '2025-09-17 20:42:02'),
+(7, 20, 'SCH001', 3, 0, 20, 1, '2025-09-18 08:34:10'),
+(8, 23, 'SCH001', 3, 0, 20, 0, '2025-09-18 08:34:31');
 
 -- --------------------------------------------------------
 
@@ -916,7 +939,7 @@ CREATE TABLE `student_registration_status` (
   `id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `academic_year_id` int(11) NOT NULL,
-  `registration_status` enum('unregistered','registered','completion_requested') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unregistered',
+  `registration_status` enum('unregistered','registered','completion_requested') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unregistered',
   `registration_date` timestamp NULL DEFAULT NULL,
   `completion_request_date` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1002,7 +1025,8 @@ INSERT INTO `subjects` (`id`, `subject_code`, `subject_name`, `description`, `cr
 (24, 'หฟก/', 'ฟหก', 'ฟหก', 18, '2025-09-18 00:26:02'),
 (25, 'ฟหกฟก', 'ฟหกฟก', 'ฟหก', 18, '2025-09-18 00:27:10'),
 (26, 'กก/', 'ฟหก11', 'ฟหก', 18, '2025-09-18 02:07:07'),
-(27, 'asdsdasd', '11asdda', '123', 18, '2025-09-18 06:46:01');
+(27, 'asdsdasd', '11asdda', '123', 18, '2025-09-18 06:46:01'),
+(28, 'SC101', 'SCIEN', NULL, 27, '2025-09-23 11:31:13');
 
 -- --------------------------------------------------------
 
@@ -1040,8 +1064,8 @@ CREATE TABLE `teaching_evaluations` (
   `overall_score` decimal(3,2) NOT NULL,
   `comments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `recommendations` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `pass_status` enum('pass','fail') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `pass_reason` text COLLATE utf8mb4_unicode_ci
+  `pass_status` enum('pass','fail') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pass_reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1088,7 +1112,7 @@ CREATE TABLE `teaching_sessions` (
   `class_room` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'ห้องเรียน',
   `student_count` int(11) DEFAULT NULL COMMENT 'จำนวนนักเรียน',
   `lesson_topic` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'หัวข้อบทเรียน',
-  `lesson_summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'สรุปบทเรียน',
+  `learning_activities` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'กิจกรรมการเรียนรู้',
   `learning_outcomes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'ผลการเรียนรู้',
   `teaching_methods_used` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'วิธีการสอนที่ใช้',
   `materials_used` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'สื่อการสอนที่ใช้',
@@ -1099,22 +1123,23 @@ CREATE TABLE `teaching_sessions` (
   `reflection` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'การสะท้อนคิด',
   `improvement_notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'ข้อเสนอแนะในการปรับปรุง',
   `teacher_feedback` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'ความเห็นจากครูพี่เลี้ยง',
-  `self_rating` tinyint(1) DEFAULT NULL COMMENT 'การให้คะแนนตนเอง (1-5)',
   `status` enum('draft','submitted','reviewed') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'draft' COMMENT 'สถานะบันทึก',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `teacher_rating` decimal(3,2) DEFAULT NULL,
-  `teacher_reviewed_at` timestamp NULL DEFAULT NULL
+  `teacher_reviewed_at` timestamp NULL DEFAULT NULL,
+  `self_rating` tinyint(1) DEFAULT NULL COMMENT 'การให้คะแนนตนเอง (1-5)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='ตารางบันทึกการฝึกสอนแต่ละครั้ง รายละเอียดครบถ้วน';
 
 --
 -- Dumping data for table `teaching_sessions`
 --
 
-INSERT INTO `teaching_sessions` (`id`, `student_id`, `lesson_plan_id`, `subject_id`, `teaching_date`, `start_time`, `end_time`, `class_level`, `class_room`, `student_count`, `lesson_topic`, `lesson_summary`, `learning_outcomes`, `teaching_methods_used`, `materials_used`, `student_engagement`, `problems_encountered`, `problem_solutions`, `lessons_learned`, `reflection`, `improvement_notes`, `teacher_feedback`, `self_rating`, `status`, `created_at`, `teacher_rating`, `teacher_reviewed_at`) VALUES
-(2, 18, 17, 23, '2025-09-17', '08:00:00', '11:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'submitted', '2025-09-18 03:31:06', NULL, NULL),
-(4, 18, 14, 22, '2025-09-17', '11:00:00', '13:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ประเมินแบบละเอียด - คะแนนรวม: 1/5', 5, 'submitted', '2025-09-18 04:08:24', '1.00', '2025-09-18 06:42:45'),
-(6, 1, 22, 1, '2025-09-18', '08:00:00', '09:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ประเมินแบบละเอียด - คะแนนรวม: 4/5', NULL, 'submitted', '2025-09-18 05:19:01', '4.00', '2025-09-18 06:42:11');
+INSERT INTO `teaching_sessions` (`id`, `student_id`, `lesson_plan_id`, `subject_id`, `teaching_date`, `start_time`, `end_time`, `class_level`, `class_room`, `student_count`, `lesson_topic`, `learning_activities`, `learning_outcomes`, `teaching_methods_used`, `materials_used`, `student_engagement`, `problems_encountered`, `problem_solutions`, `lessons_learned`, `reflection`, `improvement_notes`, `teacher_feedback`, `status`, `created_at`, `teacher_rating`, `teacher_reviewed_at`, `self_rating`) VALUES
+(2, 18, 17, 23, '2025-09-17', '08:00:00', '11:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'submitted', '2025-09-18 03:31:06', NULL, NULL, NULL),
+(4, 18, 14, 22, '2025-09-17', '11:00:00', '13:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ประเมินแบบละเอียด - คะแนนรวม: 1/5', 'submitted', '2025-09-18 04:08:24', '1.00', '2025-09-18 06:42:45', NULL),
+(6, 1, 22, 1, '2025-09-18', '08:00:00', '09:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ประเมินแบบละเอียด - คะแนนรวม: 4/5', 'submitted', '2025-09-18 05:19:01', '4.00', '2025-09-18 06:42:11', NULL),
+(10, 27, 25, 28, '2025-09-23', '08:00:00', '11:00:00', 'ป5', '505', 50, 'วิชาเอก', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'submitted', '2025-09-23 11:33:49', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1141,7 +1166,39 @@ CREATE TABLE `teaching_session_files` (
 
 INSERT INTO `teaching_session_files` (`id`, `teaching_session_id`, `file_name`, `file_path`, `file_size`, `file_type`, `mime_type`, `file_category`, `description`, `uploaded_at`) VALUES
 (2, 2, 'Screenshot 2025-08-13 164013.png', 'D:\\dollar\\backend\\uploads\\teaching-sessions\\files-1758166266586-658272345.png', 7782, '.png', 'image/png', 'photo', NULL, '2025-09-18 03:31:06'),
-(4, 4, 'Screenshot 2025-08-13 164029.png', 'D:\\dollar\\backend\\uploads\\teaching-sessions\\files-1758168504304-365650927.png', 40683, '.png', 'image/png', 'photo', NULL, '2025-09-18 04:08:24');
+(4, 4, 'Screenshot 2025-08-13 164029.png', 'D:\\dollar\\backend\\uploads\\teaching-sessions\\files-1758168504304-365650927.png', 40683, '.png', 'image/png', 'photo', NULL, '2025-09-18 04:08:24'),
+(6, 10, '481071336_1114860143986043_6782195757044095901_n.jpg', 'C:\\Users\\Dhinotea\\work\\-\\back\\uploads\\teaching-sessions\\files-1758627229938-133257662.jpg', 139609, '.jpg', 'image/jpeg', 'photo', NULL, '2025-09-23 11:33:49');
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `teaching_session_overview`
+-- (See below for the actual view)
+--
+CREATE TABLE `teaching_session_overview` (
+`id` int(11)
+,`student_id` int(11)
+,`lesson_plan_id` int(11)
+,`subject_id` int(11)
+,`teaching_date` date
+,`start_time` time
+,`end_time` time
+,`duration_hours` decimal(25,4)
+,`class_level` varchar(50)
+,`class_room` varchar(50)
+,`student_count` int(11)
+,`lesson_topic` varchar(200)
+,`self_rating` tinyint(1)
+,`status` enum('draft','submitted','reviewed')
+,`lesson_plan_name` varchar(200)
+,`subject_code` varchar(20)
+,`subject_name` varchar(200)
+,`student_name` varchar(201)
+,`student_code` varchar(20)
+,`file_count` bigint(21)
+,`created_at` timestamp
+,`updated_at` timestamp
+);
 
 -- --------------------------------------------------------
 
@@ -1165,45 +1222,56 @@ CREATE TABLE `teaching_time_slots` (
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `user_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role` enum('student','teacher','supervisor','admin') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `first_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci,
-  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `school_id` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` enum('student','teacher','supervisor','admin') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `first_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `school_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `student_code` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'รหัสนักศึกษา (เฉพาะ role = student)',
-  `faculty` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'คณะที่สังกัด (เฉพาะ role = student)',
-  `major` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'สาขาวิชา (เฉพาะ role = student)',
-  `profile_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'ชื่อไฟล์รูปโปรไฟล์'
+  `student_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'รหัสนักศึกษา (เฉพาะ role = student)',
+  `faculty` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'คณะที่สังกัด (เฉพาะ role = student)',
+  `major` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'สาขาวิชา (เฉพาะ role = student)',
+  `profile_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'ชื่อไฟล์รูปโปรไฟล์',
+  `advisor_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'ชื่ออาจารย์ที่ปรึกษา (เฉพาะ role = student)',
+  `advisor_phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'เบอร์โทรอาจารย์ที่ปรึกษา (เฉพาะ role = student)',
+  `father_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'ชื่อบิดา (เฉพาะ role = student)',
+  `father_occupation` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'อาชีพบิดา (เฉพาะ role = student)',
+  `father_phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'เบอร์โทรบิดา (เฉพาะ role = student)',
+  `mother_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'ชื่อมารดา (เฉพาะ role = student)',
+  `mother_occupation` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'อาชีพมารดา (เฉพาะ role = student)',
+  `mother_phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'เบอร์โทรมารดา (เฉพาะ role = student)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `user_id`, `role`, `first_name`, `last_name`, `phone`, `email`, `address`, `username`, `password`, `school_id`, `created_at`, `student_code`, `faculty`, `major`, `profile_image`) VALUES
-(1, 'STD001', 'student', 'สมชาย', 'ใจดี', '081-234-5678', 'somchai@email.com', '123 หมู่ 1 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'somchai_std', '$2a$10$placeholder_hash_for_password123', 'SCH001', '2025-09-17 11:15:27', '6401234567', 'คณะวิทยาศาสตร์และเทคโนโลยี', 'วิทยาการคอมพิวเตอร์', 'default-student.jpg'),
-(2, 'STD002', 'student', 'สมหญิง', 'รักเรียน', '082-345-6789', 'somying@email.com', '456 หมู่ 2 ตำบลสุรนารี อำเภอเมือง จังหวัดนครราชสีมา', 'somying_std', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', 'SCH002', '2025-09-17 11:15:27', '6401234568', 'คณะครุศาสตร์', 'การศึกษาปฐมวัย', NULL),
-(3, 'STD003', 'student', 'วิชัย', 'ขยันเรียน', '083-456-7890', 'wichai@email.com', '789 หมู่ 3 ตำบลหนองกระทุ่ม อำเภอเมือง จังหวัดนครราชสีมา', 'wichai_std', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', 'SCH003', '2025-09-17 11:15:27', '6401234569', 'คณะบริหารธุรกิจ', 'การจัดการทั่วไป', NULL),
-(4, 'TCH001', 'teacher', 'อาจารย์สมศักดิ์', 'ใจสอน', '081-111-2222', 'somsak.teacher@email.com', '111 ถนนครูไทย ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'somsak_tch', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', 'SCH001', '2025-09-17 11:15:27', NULL, NULL, NULL, 'default-teacher.jpg'),
-(5, 'TCH002', 'teacher', 'อาจารย์วรรณา', 'รักการสอน', '082-222-3333', 'wanna.teacher@email.com', '222 ถนนศึกษา ตำบลสุรนารี อำเภอเมือง จังหวัดนครราชสีมา', 'ddd', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', 'SCH002', '2025-09-17 11:15:27', NULL, NULL, NULL, 'user_TCH002_1758179699919.png'),
-(6, 'TCH003', 'teacher', 'อาจารย์ประยุทธ', 'ดีใจสอน', '083-333-4444', 'prayuth.teacher@email.com', '333 ถนนการศึกษา ตำบลหนองกระทุ่ม อำเภอเมือง จังหวัดนครราชสีมา', 'prayuth_tch', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', 'SCH003', '2025-09-17 11:15:27', NULL, NULL, NULL, NULL),
-(7, 'SUP001', 'supervisor', 'ศาสตราจารย์ดร.วิโรจน์', 'นิเทศดี', '081-555-6666', 'wiroj.supervisor@email.com', '555 ถนนมหาวิทยาลัย ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'www', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, 'user_SUP001_1758189240049.png'),
-(8, 'SUP002', 'supervisor', 'รองศาสตราจารย์ดร.สุนีย์', 'ดูแลดี', '082-666-7777', 'sunee.supervisor@email.com', '666 ถนนวิชาการ ตำบลสุรนารี อำเภอเมือง จังหวัดนครราชสีมา', 'sunee_sup', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, NULL),
-(9, 'ADM001', 'admin', 'ผู้ดูแลระบบ', 'หลัก', '081-999-0000', 'admin@email.com', '999 ถนนเทคโนโลยี ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'admin', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, 'user_ADM001_1758122215732.png'),
-(10, 'ADM002', 'admin', 'ผู้ช่วยดูแลระบบ', 'รอง', '082-888-9999', 'admin2@email.com', '888 ถนนดิจิทัล ตำบลสุรนารี อำเภอเมือง จังหวัดนครราชสีมา', 'admin2', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, NULL),
-(17, 'STD004', 'student', 'asdad', 'asdasd', NULL, 'opee195@gmail.com', 'asdasdasdad', 'sss', '$2b$10$WboEs0yQ5o/1AAz2Ng0NUufZfr5usSycai4m5gQpy8IKkqVxZMAw6', NULL, '2025-09-17 21:29:35', '4564654564', 'asdasdad', 'asdasd', NULL),
-(18, 'STD005', 'student', 'asd', 'asd', NULL, 'myemailkittiphat327@gmail.com', NULL, 'ssaa', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-17 22:43:29', '4585125852', 'asad', 'asd', NULL),
-(20, '', 'teacher', 'ครูทดสอบ', 'ใจดี', '081-999-8888', 'test.teacher@email.com', NULL, '', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-18 08:29:57', NULL, NULL, NULL, NULL),
-(23, 'TCH999', 'teacher', 'ครูทดสอบ', 'ใจดี', '081-999-8888', 'test.teacher999@email.com', NULL, 'test.teacher999', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-18 08:30:30', NULL, NULL, NULL, NULL),
-(24, 'STU999', 'student', 'นักศึกษาทดสอบ', 'ใจดี', '081-777-6666', 'test.student999@email.com', NULL, '8785', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-18 08:30:38', '6409999999', 'คณะวิทยาศาสตร์และเทคโนโลยี', 'วิทยาการคอมพิวเตอร์', NULL),
-(26, 'STD1000', 'student', 'asdas', 'dasd', NULL, 'sadas@sss.sss', NULL, 'asw', '$2b$10$532zEXhB8T2vtLdu8D9JwOgxvdqdBkP5HLy0bTfeyzFWPoR.Yo17.', NULL, '2025-09-18 10:13:02', '0850150020', 'asdas', 'asd', NULL);
+INSERT INTO `users` (`id`, `user_id`, `role`, `first_name`, `last_name`, `phone`, `email`, `address`, `username`, `password`, `school_id`, `created_at`, `student_code`, `faculty`, `major`, `profile_image`, `advisor_name`, `advisor_phone`, `father_name`, `father_occupation`, `father_phone`, `mother_name`, `mother_occupation`, `mother_phone`) VALUES
+(1, 'STD001', 'student', 'สมชาย', 'ใจดี', '081-234-5678', 'somchai@email.com', '123 หมู่ 1 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'somchai_std', '$2a$10$placeholder_hash_for_password123', 'SCH001', '2025-09-17 11:15:27', '6401234567', 'คณะวิทยาศาสตร์และเทคโนโลยี', 'วิทยาการคอมพิวเตอร์', 'default-student.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 'STD002', 'student', 'สมหญิง', 'รักเรียน', '082-345-6789', 'somying@email.com', '456 หมู่ 2 ตำบลสุรนารี อำเภอเมือง จังหวัดนครราชสีมา', 'somying_std', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', 'SCH002', '2025-09-17 11:15:27', '6401234568', 'คณะครุศาสตร์', 'การศึกษาปฐมวัย', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 'STD003', 'student', 'วิชัย', 'ขยันเรียน', '083-456-7890', 'wichai@email.com', '789 หมู่ 3 ตำบลหนองกระทุ่ม อำเภอเมือง จังหวัดนครราชสีมา', 'wichai_std', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', 'SCH003', '2025-09-17 11:15:27', '6401234569', 'คณะบริหารธุรกิจ', 'การจัดการทั่วไป', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 'TCH001', 'teacher', 'อาจารย์สมศักดิ์', 'ใจสอน', '081-111-2222', 'somsak.teacher@email.com', '111 ถนนครูไทย ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'somsak_tch', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', 'SCH001', '2025-09-17 11:15:27', NULL, NULL, NULL, 'default-teacher.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 'TCH002', 'teacher', 'อาจารย์วรรณา', 'รักการสอน', '082-222-3333', 'wanna.teacher@email.com', '222 ถนนศึกษา ตำบลสุรนารี อำเภอเมือง จังหวัดนครราชสีมา', 'ddd', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', 'SCH002', '2025-09-17 11:15:27', NULL, NULL, NULL, 'user_TCH002_1758179699919.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(6, 'TCH003', 'teacher', 'อาจารย์ประยุทธ', 'ดีใจสอน', '083-333-4444', 'prayuth.teacher@email.com', '333 ถนนการศึกษา ตำบลหนองกระทุ่ม อำเภอเมือง จังหวัดนครราชสีมา', 'prayuth_tch', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', 'SCH003', '2025-09-17 11:15:27', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 'SUP001', 'supervisor', 'ศาสตราจารย์ดร.วิโรจน์', 'นิเทศดี', '081-555-6666', 'wiroj.supervisor@email.com', '555 ถนนมหาวิทยาลัย ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'www', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, 'user_SUP001_1758189240049.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(8, 'SUP002', 'supervisor', 'รองศาสตราจารย์ดร.สุนีย์', 'ดูแลดี', '082-666-7777', 'sunee.supervisor@email.com', '666 ถนนวิชาการ ตำบลสุรนารี อำเภอเมือง จังหวัดนครราชสีมา', 'sunee_sup', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(9, 'ADM001', 'admin', 'ผู้ดูแลระบบ', 'หลัก', '081-999-0000', 'admin@email.com', '999 ถนนเทคโนโลยี ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'admin', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, 'user_ADM001_1758122215732.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 'ADM002', 'admin', 'ผู้ช่วยดูแลระบบ', 'รอง', '082-888-9999', 'admin2@email.com', '888 ถนนดิจิทัล ตำบลสุรนารี อำเภอเมือง จังหวัดนครราชสีมา', 'admin2', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(17, 'STD004', 'student', 'asdad', 'asdasd', NULL, 'opee195@gmail.com', 'asdasdasdad', 'sss', '$2b$10$WboEs0yQ5o/1AAz2Ng0NUufZfr5usSycai4m5gQpy8IKkqVxZMAw6', NULL, '2025-09-17 21:29:35', '4564654564', 'asdasdad', 'asdasd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(18, 'STD005', 'student', 'asd', 'asd', NULL, 'myemailkittiphat327@gmail.com', NULL, 'ssaa', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-17 22:43:29', '4585125852', 'asad', 'asd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(20, '', 'teacher', 'ครูทดสอบ', 'ใจดี', '081-999-8888', 'test.teacher@email.com', NULL, '', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-18 08:29:57', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(23, 'TCH999', 'teacher', 'ครูทดสอบ', 'ใจดี', '081-999-8888', 'test.teacher999@email.com', NULL, 'test.teacher999', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-18 08:30:30', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(24, 'STU999', 'student', 'นักศึกษาทดสอบ', 'ใจดี', '081-777-6666', 'test.student999@email.com', NULL, '8785', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-18 08:30:38', '6409999999', 'คณะวิทยาศาสตร์และเทคโนโลยี', 'วิทยาการคอมพิวเตอร์', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(26, 'STD1000', 'student', 'asdas', 'dasd', NULL, 'sadas@sss.sss', NULL, 'asw', '$2b$10$532zEXhB8T2vtLdu8D9JwOgxvdqdBkP5HLy0bTfeyzFWPoR.Yo17.', NULL, '2025-09-18 10:13:02', '0850150020', 'asdas', 'asd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(27, 'STD1001', 'student', 'เอกชัย', 'ศรีวิชัย', '0850150023', 'aek@aek.aek', NULL, 'aek', '$2b$10$xG0zlr9QiKwfRDUekvhCRO1gRgoJeQ.OXvUKSBIPB2UICIgzw5oLi', NULL, '2025-09-23 10:20:14', '4456456465', 'ครุศาสตร์', 'ภาษาอังกฤษ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(28, 'STD1002', 'student', 'sad', 'asd', '0878975646', 'asd@sad.sss', NULL, 'swe', '$2b$10$Uo6Ni8eAjsFTFCGhG8xCye4KzhuKnmp8YPrEZAmNkj4rSw8nSCMye', NULL, '2025-09-23 11:40:57', '1234567456', 'ครุศาสตร์', 'บรรณารักษ์', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(29, 'STD1003', 'student', 'ฟกฟก', 'ฟหกฟหก', '0851516213', 'aeke@aeke.aeke', NULL, 'aeke', '$2b$10$EBKDhk5oKjS6J3d3SJ5BGuEBwhJT3aODCKnEGx2uAR2nLuxRxkA6K', NULL, '2025-09-23 12:08:35', '1478945613', 'ครุศาสตร์', 'บรรณารักษ์', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1348,6 +1416,14 @@ ALTER TABLE `conversations`
 ALTER TABLE `evaluation_criteria`
   ADD PRIMARY KEY (`id`),
   ADD KEY `evaluation_id` (`evaluation_id`);
+
+--
+-- Indexes for table `evaluation_details`
+--
+ALTER TABLE `evaluation_details`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_completion_request_id` (`completion_request_id`),
+  ADD KEY `idx_criteria_sub_item` (`criteria_id`,`sub_item_id`);
 
 --
 -- Indexes for table `internship_assignments`
@@ -1526,7 +1602,7 @@ ALTER TABLE `teaching_sessions`
   ADD KEY `idx_teaching_sessions_status` (`status`),
   ADD KEY `idx_teaching_sessions_class` (`class_level`),
   ADD KEY `idx_student_date_status` (`student_id`,`teaching_date`,`status`);
-ALTER TABLE `teaching_sessions` ADD FULLTEXT KEY `lesson_topic` (`lesson_topic`,`lesson_summary`);
+ALTER TABLE `teaching_sessions` ADD FULLTEXT KEY `lesson_topic` (`lesson_topic`,`learning_activities`);
 
 --
 -- Indexes for table `teaching_session_files`
@@ -1587,7 +1663,7 @@ ALTER TABLE `chat_messages`
 -- AUTO_INCREMENT for table `completion_requests`
 --
 ALTER TABLE `completion_requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `conversations`
@@ -1599,19 +1675,25 @@ ALTER TABLE `conversations`
 -- AUTO_INCREMENT for table `evaluation_criteria`
 --
 ALTER TABLE `evaluation_criteria`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `evaluation_details`
+--
+ALTER TABLE `evaluation_details`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `internship_assignments`
 --
 ALTER TABLE `internship_assignments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `lesson_plans`
 --
 ALTER TABLE `lesson_plans`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `lesson_plan_documents`
@@ -1623,7 +1705,7 @@ ALTER TABLE `lesson_plan_documents`
 -- AUTO_INCREMENT for table `lesson_plan_files`
 --
 ALTER TABLE `lesson_plan_files`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `lesson_plan_materials`
@@ -1689,7 +1771,7 @@ ALTER TABLE `student_teacher_conversations`
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `teaching_evaluations`
@@ -1707,13 +1789,13 @@ ALTER TABLE `teaching_materials`
 -- AUTO_INCREMENT for table `teaching_sessions`
 --
 ALTER TABLE `teaching_sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `teaching_session_files`
 --
 ALTER TABLE `teaching_session_files`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `teaching_time_slots`
@@ -1725,7 +1807,7 @@ ALTER TABLE `teaching_time_slots`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- Constraints for dumped tables
@@ -1759,6 +1841,12 @@ ALTER TABLE `conversations`
 --
 ALTER TABLE `evaluation_criteria`
   ADD CONSTRAINT `evaluation_criteria_ibfk_1` FOREIGN KEY (`evaluation_id`) REFERENCES `teaching_evaluations` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `evaluation_details`
+--
+ALTER TABLE `evaluation_details`
+  ADD CONSTRAINT `evaluation_details_ibfk_1` FOREIGN KEY (`completion_request_id`) REFERENCES `completion_requests` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `internship_assignments`
