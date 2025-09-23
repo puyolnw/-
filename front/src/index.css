@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Sarabun', sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  color: #374151;
+  background-color: #ffffff;
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Sarabun', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Prompt', sans-serif;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Role-based themes */
+.student-theme {
+  --role-primary: #3b82f6;
+  --role-secondary: #dbeafe;
+  --role-accent: #2563eb;
+}
+
+.teacher-theme {
+  --role-primary: #22c55e;
+  --role-secondary: #dcfce7;
+  --role-accent: #16a34a;
+}
+
+.supervisor-theme {
+  --role-primary: #f97316;
+  --role-secondary: #ffedd5;
+  --role-accent: #ea580c;
+}
+
+.admin-theme {
+  --role-primary: #374151;
+  --role-secondary: #f3f4f6;
+  --role-accent: #1f2937;
+}
+
+/* Page Transitions */
+.page-transition {
+  transition: all 0.3s ease-in-out;
+}
+
+.page-fade-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+}
+
+.page-fade-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-fade-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+}
+
+/* Smooth transitions for interactive elements */
+button, a, input, select, textarea {
+  transition: all 0.2s ease;
+}
+
+/* Hover effects for buttons */
+button:hover, .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active, .btn:active {
+  transform: translateY(0);
+}
+
+/* Link hover effects */
+a:hover {
+  transform: translateX(2px);
+}
+
+/* Card hover effects */
+.card, .bg-white {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover, .bg-white:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* Route transition container */
+.route-transition {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.route-transition > * {
+  animation: fadeInUp 0.3s ease-out;
+}
