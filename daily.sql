@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Sep 23, 2025 at 12:27 PM
+-- Generation Time: Sep 23, 2025 at 02:24 PM
 -- Server version: 8.0.17
 -- PHP Version: 7.3.10
 
@@ -128,19 +128,19 @@ INSERT INTO `academic_years` (`id`, `year`, `semester`, `start_date`, `end_date`
 -- (See below for the actual view)
 --
 CREATE TABLE `available_schools` (
-`id` int(11)
+`address` text
+,`available_slots` bigint(12)
+,`can_apply` int(1)
+,`current_students` int(11)
+,`current_teachers` int(11)
+,`enrollment_status` varchar(12)
+,`id` int(11)
+,`max_students` int(11)
+,`max_teachers` int(11)
+,`phone` varchar(15)
 ,`school_id` varchar(20)
 ,`school_name` varchar(200)
-,`address` text
-,`phone` varchar(15)
-,`max_students` int(11)
-,`current_students` int(11)
-,`max_teachers` int(11)
-,`current_teachers` int(11)
-,`available_slots` bigint(12)
 ,`teachers` text
-,`enrollment_status` varchar(12)
-,`can_apply` int(1)
 );
 
 -- --------------------------------------------------------
@@ -193,7 +193,9 @@ INSERT INTO `chat_messages` (`id`, `sender_id`, `receiver_id`, `message`, `messa
 (6, 1, 7, 'สวัสดีครับ อาจารย์', 'text', NULL, NULL, 1, '2025-09-18 09:25:41', 0, NULL, '2025-09-18 09:24:41'),
 (7, 7, 1, 'มีไร', 'text', NULL, NULL, 0, NULL, 0, NULL, '2025-09-18 09:26:17'),
 (8, 7, 18, '655', 'text', NULL, NULL, 1, '2025-09-18 09:28:01', 0, NULL, '2025-09-18 09:27:41'),
-(9, 18, 7, '555', 'text', NULL, NULL, 1, '2025-09-18 09:28:06', 0, NULL, '2025-09-18 09:28:05');
+(9, 18, 7, '555', 'text', NULL, NULL, 1, '2025-09-18 09:28:06', 0, NULL, '2025-09-18 09:28:05'),
+(10, 30, 6, 'สวัสดีครับ', 'text', NULL, NULL, 1, '2025-09-23 14:21:25', 0, NULL, '2025-09-23 14:20:02'),
+(11, 30, 6, 'วันนี้วันอะไร', 'text', NULL, NULL, 1, '2025-09-23 14:21:25', 0, NULL, '2025-09-23 14:20:08');
 
 -- --------------------------------------------------------
 
@@ -221,6 +223,8 @@ CREATE TABLE `completion_requests` (
   `supervisor_comments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'ความเห็นอาจารย์ผู้นิเทศ',
   `supervisor_rating` tinyint(1) DEFAULT NULL COMMENT 'คะแนนจากอาจารย์ผู้นิเทศ (1-5)',
   `supervisor_reviewed_at` timestamp NULL DEFAULT NULL COMMENT 'วันที่อาจารย์ให้ความเห็น',
+  `detailed_evaluation_data` json DEFAULT NULL,
+  `detailed_rating` int(11) DEFAULT NULL,
   `approved_by` int(11) DEFAULT NULL COMMENT 'ผู้อนุมัติ',
   `approved_date` timestamp NULL DEFAULT NULL COMMENT 'วันที่อนุมัติ',
   `rejection_reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'เหตุผลการปฏิเสธ',
@@ -245,10 +249,11 @@ CREATE TABLE `completion_requests` (
 -- Dumping data for table `completion_requests`
 --
 
-INSERT INTO `completion_requests` (`id`, `student_id`, `assignment_id`, `request_date`, `total_teaching_hours`, `total_lesson_plans`, `total_teaching_sessions`, `self_evaluation`, `achievements`, `challenges_faced`, `skills_developed`, `future_goals`, `status`, `teacher_comments`, `teacher_rating`, `teacher_reviewed_at`, `supervisor_comments`, `supervisor_rating`, `supervisor_reviewed_at`, `approved_by`, `approved_date`, `rejection_reason`, `revision_notes`, `created_at`, `supervisor_criteria_1`, `supervisor_criteria_2`, `supervisor_criteria_3`, `supervisor_criteria_4`, `supervisor_criteria_5`, `supervisor_criteria_6`, `supervisor_criteria_7`, `supervisor_criteria_8`, `supervisor_criteria_9`, `supervisor_criteria_10`, `supervisor_total_score`, `supervisor_average_score`) VALUES
-(1, 18, 21, '2025-09-18 06:58:18', '25.00', 5, 8, 'ดัมาก', 'กัมากๆ', 'กัมาก', 'กัมากหฟ', 'ฟหก', 'supervisor_approved', 'good', 5, '2025-09-18 07:16:15', '555', NULL, '2025-09-18 09:10:00', NULL, NULL, NULL, NULL, '2025-09-18 04:55:20', 5, 5, 5, 5, 5, 5, 4, 4, 4, 5, 47, '4.70'),
-(2, 1, 19, '2025-09-18 05:23:43', '1.00', 1, 1, 'การฝึกสอนครั้งนี้ทำให้ได้เรียนรู้การจัดการชั้นเรียนและการสอนจริง', 'สามารถสอนนักเรียนได้อย่างมีประสิทธิภาพ', 'การจัดการพฤติกรรมนักเรียน', 'ทักษะการสื่อสารและการสอน', 'ต้องการพัฒนาทักษะการสอนให้ดีขึ้น', 'supervisor_approved', 'นักเรียนมีความตั้งใจในการสอนดีมาก สามารถจัดการชั้นเรียนได้อย่างมีประสิทธิภาพ', 4, '2025-09-18 05:25:32', '????????????', 5, '2025-09-18 08:58:24', NULL, '2025-09-18 05:25:35', NULL, NULL, '2025-09-18 05:23:43', 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 40, '4.00'),
-(9, 29, 25, '2025-09-23 12:15:36', '0.00', 0, 0, 'ไม่มี', '', '', '', '', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-23 12:15:36', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `completion_requests` (`id`, `student_id`, `assignment_id`, `request_date`, `total_teaching_hours`, `total_lesson_plans`, `total_teaching_sessions`, `self_evaluation`, `achievements`, `challenges_faced`, `skills_developed`, `future_goals`, `status`, `teacher_comments`, `teacher_rating`, `teacher_reviewed_at`, `supervisor_comments`, `supervisor_rating`, `supervisor_reviewed_at`, `detailed_evaluation_data`, `detailed_rating`, `approved_by`, `approved_date`, `rejection_reason`, `revision_notes`, `created_at`, `supervisor_criteria_1`, `supervisor_criteria_2`, `supervisor_criteria_3`, `supervisor_criteria_4`, `supervisor_criteria_5`, `supervisor_criteria_6`, `supervisor_criteria_7`, `supervisor_criteria_8`, `supervisor_criteria_9`, `supervisor_criteria_10`, `supervisor_total_score`, `supervisor_average_score`) VALUES
+(1, 18, 21, '2025-09-18 06:58:18', '25.00', 5, 8, 'ดัมาก', 'กัมากๆ', 'กัมาก', 'กัมากหฟ', 'ฟหก', 'supervisor_approved', 'good', 5, '2025-09-18 07:16:15', '555', NULL, '2025-09-18 09:10:00', NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-18 04:55:20', 5, 5, 5, 5, 5, 5, 4, 4, 4, 5, 47, '4.70'),
+(2, 1, 19, '2025-09-18 05:23:43', '1.00', 1, 1, 'การฝึกสอนครั้งนี้ทำให้ได้เรียนรู้การจัดการชั้นเรียนและการสอนจริง', 'สามารถสอนนักเรียนได้อย่างมีประสิทธิภาพ', 'การจัดการพฤติกรรมนักเรียน', 'ทักษะการสื่อสารและการสอน', 'ต้องการพัฒนาทักษะการสอนให้ดีขึ้น', 'supervisor_approved', 'นักเรียนมีความตั้งใจในการสอนดีมาก สามารถจัดการชั้นเรียนได้อย่างมีประสิทธิภาพ', 4, '2025-09-18 05:25:32', '????????????', 5, '2025-09-18 08:58:24', NULL, NULL, NULL, '2025-09-18 05:25:35', NULL, NULL, '2025-09-18 05:23:43', 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 40, '4.00'),
+(9, 29, 25, '2025-09-23 12:15:36', '0.00', 0, 0, 'ไม่มี', '', '', '', '', 'supervisor_approved', 'ดีมาก', 4, '2025-09-23 12:42:37', 'ดีมาก', 4, '2025-09-23 13:03:13', '[{\"id\": \"1\", \"name\": \"ด้านเนื้อหาการสอน (Content Knowledge)\", \"rating\": 0, \"feedback\": \"\", \"subItems\": [{\"id\": \"1-1\", \"name\": \"ความเข้าใจในเนื้อหา\", \"rating\": 4, \"description\": \"ความเข้าใจลึกซึ้งในเนื้อหาวิชาที่สอน\"}, {\"id\": \"1-2\", \"name\": \"การอธิบายเนื้อหา\", \"rating\": 4, \"description\": \"ความสามารถในการอธิบายเนื้อหาให้ผู้เรียนเข้าใจ\"}], \"description\": \"การประเมินความรู้ของผู้ฝึกสอนในเนื้อหาวิชาที่สอน ว่ามีความเข้าใจลึกซึ้งและสามารถอธิบายเนื้อหาต่างๆ ให้ผู้เรียนเข้าใจได้หรือไม่\"}, {\"id\": \"2\", \"name\": \"ด้านวิธีการสอน (Teaching Methods)\", \"rating\": 0, \"feedback\": \"\", \"subItems\": [{\"id\": \"2-1\", \"name\": \"เทคนิคการสอน\", \"rating\": 4, \"description\": \"การใช้เทคนิคการสอนที่หลากหลายและเหมาะสม\"}, {\"id\": \"2-2\", \"name\": \"การอภิปรายและกิจกรรม\", \"rating\": 4, \"description\": \"การจัดกิจกรรมการอภิปรายและกิจกรรมกลุ่ม\"}], \"description\": \"การประเมินวิธีการที่ใช้ในการถ่ายทอดความรู้ เช่น การใช้เทคนิคการสอนที่หลากหลาย เช่น การอภิปราย การทำกิจกรรมกลุ่ม หรือการใช้สื่อการสอน\"}, {\"id\": \"3\", \"name\": \"ด้านความสัมพันธ์กับผู้เรียน (Teacher-Student Interaction)\", \"rating\": 0, \"feedback\": \"\", \"subItems\": [{\"id\": \"3-1\", \"name\": \"การสร้างความสัมพันธ์\", \"rating\": 4, \"description\": \"การสร้างความสัมพันธ์ที่ดีกับผู้เรียน\"}, {\"id\": \"3-2\", \"name\": \"บรรยากาศการเรียนรู้\", \"rating\": 4, \"description\": \"การสร้างบรรยากาศที่เอื้อต่อการเรียนรู้\"}], \"description\": \"การประเมินความสามารถของผู้ฝึกสอนในการสร้างความสัมพันธ์ที่ดีและเป็นมิตรกับผู้เรียน การสร้างบรรยากาศที่เอื้อต่อการเรียนรู้\"}, {\"id\": \"4\", \"name\": \"ด้านการประเมินผลการเรียนรู้ของผู้เรียน (Assessment of Learning)\", \"rating\": 0, \"feedback\": \"\", \"subItems\": [{\"id\": \"4-1\", \"name\": \"วิธีการประเมิน\", \"rating\": 4, \"description\": \"การใช้วิธีการประเมินที่เหมาะสมและมีประสิทธิภาพ\"}, {\"id\": \"4-2\", \"name\": \"การปรับปรุงการสอน\", \"rating\": 4, \"description\": \"การนำผลการประเมินมาปรับปรุงการสอน\"}], \"description\": \"การประเมินว่าเทคนิคหรือวิธีการที่ใช้ในการประเมินผลการเรียนรู้ของผู้เรียนมีประสิทธิภาพหรือไม่ และการปรับใช้ผลการประเมินในการปรับปรุงการสอน\"}, {\"id\": \"5\", \"name\": \"ด้านการจัดการชั้นเรียน (Classroom Management)\", \"rating\": 0, \"feedback\": \"\", \"subItems\": [{\"id\": \"5-1\", \"name\": \"การควบคุมระเบียบวินัย\", \"rating\": 4, \"description\": \"ความสามารถในการควบคุมระเบียบวินัยในชั้นเรียน\"}, {\"id\": \"5-2\", \"name\": \"การจัดสรรเวลา\", \"rating\": 4, \"description\": \"การจัดสรรเวลาในการสอนอย่างเหมาะสม\"}], \"description\": \"การประเมินความสามารถในการจัดการกับสถานการณ์ในห้องเรียน เช่น การควบคุมระเบียบวินัย การจัดสรรเวลา และการกระตุ้นให้ผู้เรียนมีส่วนร่วม\"}, {\"id\": \"6\", \"name\": \"ด้านการใช้สื่อและเทคโนโลยี (Use of Media and Technology)\", \"rating\": 0, \"feedback\": \"\", \"subItems\": [{\"id\": \"6-1\", \"name\": \"การใช้สื่อการสอน\", \"rating\": 4, \"description\": \"การใช้สื่อการสอนที่เหมาะสมและมีประสิทธิภาพ\"}, {\"id\": \"6-2\", \"name\": \"การใช้เทคโนโลยี\", \"rating\": 4, \"description\": \"การใช้เทคโนโลยีในการสนับสนุนการเรียนการสอน\"}], \"description\": \"การประเมินการใช้สื่อหรือเทคโนโลยีในการสนับสนุนการเรียนการสอน เพื่อเพิ่มประสิทธิภาพในการถ่ายทอดเนื้อหาหรือทำให้การเรียนรู้น่าสนใจขึ้น\"}, {\"id\": \"7\", \"name\": \"ด้านการพัฒนาตนเอง (Self-Development)\", \"rating\": 0, \"feedback\": \"\", \"subItems\": [{\"id\": \"7-1\", \"name\": \"การแสวงหาความรู้\", \"rating\": 4, \"description\": \"การแสวงหาความรู้ใหม่ๆ และพัฒนาตนเอง\"}, {\"id\": \"7-2\", \"name\": \"การรับฟังข้อเสนอแนะ\", \"rating\": 4, \"description\": \"การรับฟัง feedback และนำไปปรับปรุง\"}], \"description\": \"การประเมินความสามารถของผู้ฝึกสอนในการพัฒนาตนเอง เช่น การหาความรู้ใหม่ๆ การปรับปรุงทักษะการสอน รวมไปถึงการรับ feedback และนำไปปรับปรุง\"}]', 4, NULL, NULL, NULL, NULL, '2025-09-23 12:15:36', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 30, 26, '2025-09-23 14:20:21', '2.00', 1, 1, 'พอใจมาก', '5555', '555', '555', '555\n', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-23 14:20:21', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Triggers `completion_requests`
@@ -284,24 +289,24 @@ DELIMITER ;
 -- (See below for the actual view)
 --
 CREATE TABLE `completion_request_overview` (
-`id` int(11)
-,`student_id` int(11)
-,`assignment_id` int(11)
-,`request_date` timestamp
-,`status` enum('pending','under_review','approved','rejected','revision_required','supervisor_approved','supervisor_rejected')
-,`total_teaching_hours` decimal(5,2)
-,`total_lesson_plans` int(11)
-,`total_teaching_sessions` int(11)
-,`teacher_rating` tinyint(1)
-,`supervisor_rating` tinyint(1)
+`approved_by_name` varchar(201)
 ,`approved_date` timestamp
-,`student_name` varchar(201)
-,`student_code` varchar(20)
+,`assignment_id` int(11)
+,`created_at` timestamp
+,`id` int(11)
+,`request_date` timestamp
 ,`school_id` varchar(20)
 ,`school_name` varchar(200)
+,`status` enum('pending','under_review','approved','rejected','revision_required','supervisor_approved','supervisor_rejected')
+,`student_code` varchar(20)
+,`student_id` int(11)
+,`student_name` varchar(201)
+,`supervisor_rating` tinyint(1)
 ,`teacher_name` varchar(201)
-,`approved_by_name` varchar(201)
-,`created_at` timestamp
+,`teacher_rating` tinyint(1)
+,`total_lesson_plans` int(11)
+,`total_teaching_hours` decimal(5,2)
+,`total_teaching_sessions` int(11)
 ,`updated_at` timestamp
 );
 
@@ -330,7 +335,8 @@ INSERT INTO `conversations` (`id`, `participant_1`, `participant_2`, `last_messa
 (1, 5, 18, 2, 0, '2025-09-18 04:29:41'),
 (3, 7, 1, 1, 0, '2025-09-18 09:25:10'),
 (4, 1, 7, 7, 0, '2025-09-18 09:26:17'),
-(5, 7, 18, 9, 0, '2025-09-18 09:27:41');
+(5, 7, 18, 9, 0, '2025-09-18 09:27:41'),
+(7, 6, 30, 11, 0, '2025-09-23 14:20:02');
 
 -- --------------------------------------------------------
 
@@ -383,6 +389,26 @@ CREATE TABLE `evaluation_details` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ;
 
+--
+-- Dumping data for table `evaluation_details`
+--
+
+INSERT INTO `evaluation_details` (`id`, `completion_request_id`, `criteria_id`, `sub_item_id`, `sub_item_name`, `sub_item_description`, `rating`, `created_at`) VALUES
+(15, 9, '1', '1-1', 'ความเข้าใจในเนื้อหา', 'ความเข้าใจลึกซึ้งในเนื้อหาวิชาที่สอน', 4, '2025-09-23 13:03:13'),
+(16, 9, '1', '1-2', 'การอธิบายเนื้อหา', 'ความสามารถในการอธิบายเนื้อหาให้ผู้เรียนเข้าใจ', 4, '2025-09-23 13:03:13'),
+(17, 9, '2', '2-1', 'เทคนิคการสอน', 'การใช้เทคนิคการสอนที่หลากหลายและเหมาะสม', 4, '2025-09-23 13:03:13'),
+(18, 9, '2', '2-2', 'การอภิปรายและกิจกรรม', 'การจัดกิจกรรมการอภิปรายและกิจกรรมกลุ่ม', 4, '2025-09-23 13:03:13'),
+(19, 9, '3', '3-1', 'การสร้างความสัมพันธ์', 'การสร้างความสัมพันธ์ที่ดีกับผู้เรียน', 4, '2025-09-23 13:03:13'),
+(20, 9, '3', '3-2', 'บรรยากาศการเรียนรู้', 'การสร้างบรรยากาศที่เอื้อต่อการเรียนรู้', 4, '2025-09-23 13:03:13'),
+(21, 9, '4', '4-1', 'วิธีการประเมิน', 'การใช้วิธีการประเมินที่เหมาะสมและมีประสิทธิภาพ', 4, '2025-09-23 13:03:13'),
+(22, 9, '4', '4-2', 'การปรับปรุงการสอน', 'การนำผลการประเมินมาปรับปรุงการสอน', 4, '2025-09-23 13:03:13'),
+(23, 9, '5', '5-1', 'การควบคุมระเบียบวินัย', 'ความสามารถในการควบคุมระเบียบวินัยในชั้นเรียน', 4, '2025-09-23 13:03:13'),
+(24, 9, '5', '5-2', 'การจัดสรรเวลา', 'การจัดสรรเวลาในการสอนอย่างเหมาะสม', 4, '2025-09-23 13:03:13'),
+(25, 9, '6', '6-1', 'การใช้สื่อการสอน', 'การใช้สื่อการสอนที่เหมาะสมและมีประสิทธิภาพ', 4, '2025-09-23 13:03:13'),
+(26, 9, '6', '6-2', 'การใช้เทคโนโลยี', 'การใช้เทคโนโลยีในการสนับสนุนการเรียนการสอน', 4, '2025-09-23 13:03:13'),
+(27, 9, '7', '7-1', 'การแสวงหาความรู้', 'การแสวงหาความรู้ใหม่ๆ และพัฒนาตนเอง', 4, '2025-09-23 13:03:13'),
+(28, 9, '7', '7-2', 'การรับฟังข้อเสนอแนะ', 'การรับฟัง feedback และนำไปปรับปรุง', 4, '2025-09-23 13:03:13');
+
 -- --------------------------------------------------------
 
 --
@@ -416,7 +442,8 @@ INSERT INTO `internship_assignments` (`id`, `student_id`, `school_id`, `academic
 (21, 18, 'SCH002', 3, NULL, 'active', '2025-09-17 22:43:37', NULL, NULL, NULL, '2025-09-17 22:43:37'),
 (22, 24, 'SCH001', 3, 20, 'active', '2025-09-18 08:34:19', NULL, NULL, NULL, '2025-09-18 08:34:19'),
 (24, 27, 'SCH001', 3, 4, 'active', '2025-09-23 10:56:05', NULL, NULL, NULL, '2025-09-23 10:56:05'),
-(25, 29, 'SCH002', 3, 5, 'active', '2025-09-23 12:09:30', NULL, NULL, NULL, '2025-09-23 12:09:30');
+(25, 29, 'SCH002', 3, 5, 'active', '2025-09-23 12:09:30', NULL, NULL, NULL, '2025-09-23 12:09:30'),
+(26, 30, 'SCH003', 3, 6, 'active', '2025-09-23 14:17:56', NULL, NULL, NULL, '2025-09-23 14:17:56');
 
 --
 -- Triggers `internship_assignments`
@@ -570,7 +597,8 @@ INSERT INTO `lesson_plans` (`id`, `student_id`, `lesson_plan_name`, `subject_id`
 (22, 1, 'แผนการสอนคณิตศาสตร์ ม.1', 1, 'การสอนเรื่องเศษส่วน', 'นักเรียนสามารถเข้าใจเศษส่วนได้', 'การบรรยายและการฝึกปฏิบัติ', 'การทดสอบและการประเมิน', 50, 'ม.1', 'active', '2025-09-18 05:18:43', NULL, NULL, NULL),
 (23, 18, 'ฟหก', 25, NULL, NULL, NULL, NULL, 111, NULL, 'active', '2025-09-18 06:46:23', NULL, NULL, NULL),
 (24, 24, 'แผนการสอนคณิตศาสตร์', 1, 'สอนการบวกเลข', 'นักเรียนสามารถบวกเลขได้', 'สอนแบบบรรยาย', 'ทดสอบการบวก', 50, 'ม.1', 'active', '2025-09-18 09:03:25', NULL, NULL, NULL),
-(25, 27, 'วิทยาศาสตร์', 28, NULL, NULL, NULL, NULL, 50, NULL, 'active', '2025-09-23 11:31:24', NULL, NULL, NULL);
+(25, 27, 'วิทยาศาสตร์', 28, NULL, NULL, NULL, NULL, 50, NULL, 'active', '2025-09-23 11:31:24', NULL, NULL, NULL),
+(26, 30, 'แผนการสอน 1', 29, 'วิชาคณิต ', 'บวกเลข', NULL, NULL, 50, NULL, 'active', '2025-09-23 14:18:44', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -617,7 +645,9 @@ INSERT INTO `lesson_plan_files` (`id`, `lesson_plan_id`, `file_name`, `file_path
 (18, 14, 'output-onlinepngtools.png', 'D:\\dollar\\backend\\uploads\\lesson-plans\\files-1758161982496-324033392-output-onlinepngtools.png', 11518, '.png', 'image/png', 'media', '2025-09-18 02:19:42'),
 (19, 23, 'บทที่-3-วีระพงษ์-ล่าสุด ฉบับสมบูรณ์.pdf', 'D:\\dollar\\backend\\uploads\\lesson-plans\\files-1758177983505-242977565-บทที่-3-วีระพงษ์-ล่าสุด ฉบับสมบูรณ์.pdf', 1849924, '.pdf', 'application/pdf', 'document', '2025-09-18 06:46:23'),
 (20, 23, 'output-onlinepngtools.png', 'D:\\dollar\\backend\\uploads\\lesson-plans\\files-1758177983559-730038072-output-onlinepngtools.png', 11518, '.png', 'image/png', 'media', '2025-09-18 06:46:23'),
-(21, 25, 'คู่มือการใช้งานระบบฝึกประสบการณ์วิชาชีพครู (1)  แก้ไขใหม่  19-9-2568   แก้ไขแก้ไข  ออนไลน์ (1).docx', 'C:\\Users\\Dhinotea\\work\\-\\back\\uploads\\lesson-plans\\files-1758627092921-827186687-คู่มือการใช้งานระบบฝึกประสบการณ์วิชาชีพครู (1)  แก้ไขใหม่  19-9-2568   แก้ไขแก้ไข  ออนไลน์ (1).docx', 570990, '.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'document', '2025-09-23 11:31:32');
+(21, 25, 'คู่มือการใช้งานระบบฝึกประสบการณ์วิชาชีพครู (1)  แก้ไขใหม่  19-9-2568   แก้ไขแก้ไข  ออนไลน์ (1).docx', 'C:\\Users\\Dhinotea\\work\\-\\back\\uploads\\lesson-plans\\files-1758627092921-827186687-คู่มือการใช้งานระบบฝึกประสบการณ์วิชาชีพครู (1)  แก้ไขใหม่  19-9-2568   แก้ไขแก้ไข  ออนไลน์ (1).docx', 570990, '.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'document', '2025-09-23 11:31:32'),
+(22, 26, 'คู่มือการใช้งานระบบฝึกประสบการณ์วิชาชีพครู (1)  แก้ไขใหม่  19-9-2568   แก้ไขแก้ไข  ออนไลน์ (1).docx', 'C:\\Users\\Dhinotea\\work\\-\\back\\uploads\\lesson-plans\\files-1758637124255-957136325-คู่มือการใช้งานระบบฝึกประสบการณ์วิชาชีพครู (1)  แก้ไขใหม่  19-9-2568   แก้ไขแก้ไข  ออนไลน์ (1).docx', 570990, '.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'document', '2025-09-23 14:18:44'),
+(23, 26, '481071336_1114860143986043_6782195757044095901_n.jpg', 'C:\\Users\\Dhinotea\\work\\-\\back\\uploads\\lesson-plans\\files-1758637124268-963921064-481071336_1114860143986043_6782195757044095901_n.jpg', 139609, '.jpg', 'image/jpeg', 'media', '2025-09-23 14:18:44');
 
 -- --------------------------------------------------------
 
@@ -643,18 +673,18 @@ CREATE TABLE `lesson_plan_materials` (
 -- (See below for the actual view)
 --
 CREATE TABLE `lesson_plan_overview` (
-`id` int(11)
-,`student_id` int(11)
+`created_at` timestamp
+,`document_count` bigint(21)
+,`id` int(11)
 ,`lesson_plan_name` varchar(200)
+,`material_count` bigint(21)
+,`status` enum('active','completed','archived')
+,`student_id` int(11)
+,`student_name` varchar(201)
+,`subject_code` varchar(20)
 ,`subject_id` int(11)
 ,`subject_name` varchar(200)
-,`subject_code` varchar(20)
-,`status` enum('active','completed','archived')
-,`created_at` timestamp
 ,`updated_at` timestamp
-,`document_count` bigint(21)
-,`material_count` bigint(21)
-,`student_name` varchar(201)
 );
 
 -- --------------------------------------------------------
@@ -758,33 +788,33 @@ INSERT INTO `school_academic_schedules` (`id`, `school_id`, `academic_year_id`, 
 -- (See below for the actual view)
 --
 CREATE TABLE `school_overview` (
-`id` int(11)
+`academic_end_date` date
+,`academic_start_date` date
+,`academic_year_id` int(11)
+,`active_students` bigint(21)
+,`address` text
+,`assigned_teachers` bigint(21)
+,`available_slots` bigint(12)
+,`cancelled_students` bigint(21)
+,`completed_students` bigint(21)
+,`current_students` bigint(11)
+,`current_teachers` bigint(11)
+,`evaluation_date` date
+,`id` int(11)
+,`internship_end_date` date
+,`internship_start_date` date
+,`is_open` int(4)
+,`max_students` bigint(11)
+,`max_teachers` bigint(11)
+,`orientation_date` date
+,`phone` varchar(15)
+,`preparation_start_date` date
+,`primary_teachers` bigint(21)
+,`schedule_notes` text
 ,`school_id` varchar(20)
 ,`school_name` varchar(200)
-,`address` text
-,`phone` varchar(15)
-,`academic_year_id` int(11)
-,`year` varchar(10)
 ,`semester` tinyint(1)
-,`academic_start_date` date
-,`academic_end_date` date
-,`internship_start_date` date
-,`internship_end_date` date
-,`preparation_start_date` date
-,`orientation_date` date
-,`evaluation_date` date
-,`schedule_notes` text
-,`max_students` bigint(11)
-,`current_students` bigint(11)
-,`max_teachers` bigint(11)
-,`current_teachers` bigint(11)
-,`is_open` int(4)
-,`active_students` bigint(21)
-,`completed_students` bigint(21)
-,`cancelled_students` bigint(21)
-,`assigned_teachers` bigint(21)
-,`primary_teachers` bigint(21)
-,`available_slots` bigint(12)
+,`year` varchar(10)
 );
 
 -- --------------------------------------------------------
@@ -813,7 +843,7 @@ CREATE TABLE `school_quotas` (
 INSERT INTO `school_quotas` (`id`, `school_id`, `academic_year_id`, `max_students`, `current_students`, `max_teachers`, `current_teachers`, `is_open`, `created_at`) VALUES
 (1, 'SCH001', 3, 5, 3, 3, 1, 1, '2025-09-17 17:59:16'),
 (2, 'SCH002', 3, 8, 4, 2, 1, 1, '2025-09-17 17:59:16'),
-(3, 'SCH003', 3, 12, 1, 4, 1, 1, '2025-09-17 17:59:16'),
+(3, 'SCH003', 3, 12, 2, 4, 1, 1, '2025-09-17 17:59:16'),
 (8, 'SCH004', 3, 1, 0, 5, 0, 1, '2025-09-17 18:37:24'),
 (9, 'SCH001', 1, 15, 0, 3, 0, 0, '2025-09-17 20:15:16'),
 (10, 'SCH002', 1, 15, 0, 3, 0, 0, '2025-09-17 20:15:16'),
@@ -835,22 +865,22 @@ INSERT INTO `school_quotas` (`id`, `school_id`, `academic_year_id`, `max_student
 -- (See below for the actual view)
 --
 CREATE TABLE `school_schedule_overview` (
-`school_id` varchar(20)
-,`school_name` varchar(200)
-,`year` varchar(10)
-,`semester` tinyint(1)
+`academic_end` date
 ,`academic_start` date
-,`academic_end` date
-,`internship_start_date` date
-,`internship_end_date` date
-,`preparation_start_date` date
-,`orientation_date` date
-,`evaluation_date` date
-,`notes` text
-,`created_by_name` varchar(201)
-,`updated_by_name` varchar(201)
 ,`created_at` timestamp
+,`created_by_name` varchar(201)
+,`evaluation_date` date
+,`internship_end_date` date
+,`internship_start_date` date
+,`notes` text
+,`orientation_date` date
+,`preparation_start_date` date
+,`school_id` varchar(20)
+,`school_name` varchar(200)
+,`semester` tinyint(1)
 ,`updated_at` timestamp
+,`updated_by_name` varchar(201)
+,`year` varchar(10)
 );
 
 -- --------------------------------------------------------
@@ -878,7 +908,7 @@ CREATE TABLE `school_teachers` (
 INSERT INTO `school_teachers` (`id`, `teacher_id`, `school_id`, `academic_year_id`, `is_primary`, `max_students`, `current_students`, `created_at`) VALUES
 (1, 4, 'SCH001', 3, 1, 20, 2, '2025-09-17 17:59:16'),
 (2, 5, 'SCH002', 3, 1, 20, 1, '2025-09-17 17:59:16'),
-(3, 6, 'SCH003', 3, 1, 20, 1, '2025-09-17 17:59:16'),
+(3, 6, 'SCH003', 3, 1, 20, 2, '2025-09-17 17:59:16'),
 (4, 6, 'SCH002', 3, 0, 20, 0, '2025-09-17 20:42:02'),
 (7, 20, 'SCH001', 3, 0, 20, 1, '2025-09-18 08:34:10'),
 (8, 23, 'SCH001', 3, 0, 20, 0, '2025-09-18 08:34:31');
@@ -911,22 +941,22 @@ CREATE TABLE `student_completion_requests` (
 -- (See below for the actual view)
 --
 CREATE TABLE `student_dashboard_overview` (
-`student_id` int(11)
-,`student_code` varchar(20)
-,`student_name` varchar(201)
+`academic_year` varchar(10)
+,`completion_request_date` timestamp
 ,`faculty` varchar(200)
 ,`major` varchar(200)
-,`registration_status` enum('unregistered','registered','completion_requested')
 ,`registration_date` timestamp
-,`completion_request_date` timestamp
+,`registration_status` enum('unregistered','registered','completion_requested')
 ,`school_id` varchar(20)
 ,`school_name` varchar(200)
-,`academic_year` varchar(10)
 ,`semester` tinyint(1)
+,`student_code` varchar(20)
+,`student_id` int(11)
+,`student_name` varchar(201)
 ,`total_lesson_plans` bigint(21)
-,`total_teaching_sessions` bigint(21)
-,`total_teaching_minutes` decimal(42,0)
 ,`total_teaching_hours` decimal(46,4)
+,`total_teaching_minutes` decimal(42,0)
+,`total_teaching_sessions` bigint(21)
 );
 
 -- --------------------------------------------------------
@@ -969,21 +999,21 @@ CREATE TABLE `student_teacher_conversations` (
 -- (See below for the actual view)
 --
 CREATE TABLE `student_teaching_statistics` (
-`student_id` int(11)
-,`student_code` varchar(20)
-,`student_name` varchar(201)
+`average_self_rating` decimal(7,4)
 ,`faculty` varchar(200)
+,`first_teaching_date` date
+,`last_teaching_date` date
 ,`major` varchar(200)
 ,`school_id` varchar(20)
 ,`school_name` varchar(200)
-,`total_lesson_plans` bigint(21)
-,`total_teaching_sessions` bigint(21)
-,`total_teaching_hours` decimal(47,4)
+,`student_code` varchar(20)
+,`student_id` int(11)
+,`student_name` varchar(201)
 ,`subjects_taught` bigint(21)
-,`average_self_rating` decimal(7,4)
-,`first_teaching_date` date
-,`last_teaching_date` date
 ,`teaching_months` bigint(21)
+,`total_lesson_plans` bigint(21)
+,`total_teaching_hours` decimal(47,4)
+,`total_teaching_sessions` bigint(21)
 );
 
 -- --------------------------------------------------------
@@ -1026,7 +1056,8 @@ INSERT INTO `subjects` (`id`, `subject_code`, `subject_name`, `description`, `cr
 (25, 'ฟหกฟก', 'ฟหกฟก', 'ฟหก', 18, '2025-09-18 00:27:10'),
 (26, 'กก/', 'ฟหก11', 'ฟหก', 18, '2025-09-18 02:07:07'),
 (27, 'asdsdasd', '11asdda', '123', 18, '2025-09-18 06:46:01'),
-(28, 'SC101', 'SCIEN', NULL, 27, '2025-09-23 11:31:13');
+(28, 'SC101', 'SCIEN', NULL, 27, '2025-09-23 11:31:13'),
+(29, 'MATH 01', 'คณิตศาสตร์ 1', NULL, 30, '2025-09-23 14:18:27');
 
 -- --------------------------------------------------------
 
@@ -1035,16 +1066,16 @@ INSERT INTO `subjects` (`id`, `subject_code`, `subject_name`, `description`, `cr
 -- (See below for the actual view)
 --
 CREATE TABLE `teacher_dashboard_overview` (
-`teacher_id` int(11)
-,`teacher_code` varchar(20)
-,`teacher_name` varchar(201)
+`is_primary` tinyint(1)
 ,`school_id` varchar(20)
 ,`school_name` varchar(200)
-,`is_primary` tinyint(1)
-,`total_students` bigint(21)
-,`total_lesson_plans_reviewed` bigint(21)
-,`total_teaching_sessions_reviewed` bigint(21)
+,`teacher_code` varchar(20)
+,`teacher_id` int(11)
+,`teacher_name` varchar(201)
 ,`total_completion_requests` bigint(21)
+,`total_lesson_plans_reviewed` bigint(21)
+,`total_students` bigint(21)
+,`total_teaching_sessions_reviewed` bigint(21)
 );
 
 -- --------------------------------------------------------
@@ -1139,7 +1170,8 @@ INSERT INTO `teaching_sessions` (`id`, `student_id`, `lesson_plan_id`, `subject_
 (2, 18, 17, 23, '2025-09-17', '08:00:00', '11:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'submitted', '2025-09-18 03:31:06', NULL, NULL, NULL),
 (4, 18, 14, 22, '2025-09-17', '11:00:00', '13:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ประเมินแบบละเอียด - คะแนนรวม: 1/5', 'submitted', '2025-09-18 04:08:24', '1.00', '2025-09-18 06:42:45', NULL),
 (6, 1, 22, 1, '2025-09-18', '08:00:00', '09:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ประเมินแบบละเอียด - คะแนนรวม: 4/5', 'submitted', '2025-09-18 05:19:01', '4.00', '2025-09-18 06:42:11', NULL),
-(10, 27, 25, 28, '2025-09-23', '08:00:00', '11:00:00', 'ป5', '505', 50, 'วิชาเอก', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'submitted', '2025-09-23 11:33:49', NULL, NULL, NULL);
+(10, 27, 25, 28, '2025-09-23', '08:00:00', '11:00:00', 'ป5', '505', 50, 'วิชาเอก', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'submitted', '2025-09-23 11:33:49', NULL, NULL, NULL),
+(11, 30, 26, 29, '2025-09-23', '14:00:00', '16:00:00', 'ม.5', '101', 50, 'การบวก', 'ไม่มี', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'submitted', '2025-09-23 14:19:19', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1167,7 +1199,8 @@ CREATE TABLE `teaching_session_files` (
 INSERT INTO `teaching_session_files` (`id`, `teaching_session_id`, `file_name`, `file_path`, `file_size`, `file_type`, `mime_type`, `file_category`, `description`, `uploaded_at`) VALUES
 (2, 2, 'Screenshot 2025-08-13 164013.png', 'D:\\dollar\\backend\\uploads\\teaching-sessions\\files-1758166266586-658272345.png', 7782, '.png', 'image/png', 'photo', NULL, '2025-09-18 03:31:06'),
 (4, 4, 'Screenshot 2025-08-13 164029.png', 'D:\\dollar\\backend\\uploads\\teaching-sessions\\files-1758168504304-365650927.png', 40683, '.png', 'image/png', 'photo', NULL, '2025-09-18 04:08:24'),
-(6, 10, '481071336_1114860143986043_6782195757044095901_n.jpg', 'C:\\Users\\Dhinotea\\work\\-\\back\\uploads\\teaching-sessions\\files-1758627229938-133257662.jpg', 139609, '.jpg', 'image/jpeg', 'photo', NULL, '2025-09-23 11:33:49');
+(6, 10, '481071336_1114860143986043_6782195757044095901_n.jpg', 'C:\\Users\\Dhinotea\\work\\-\\back\\uploads\\teaching-sessions\\files-1758627229938-133257662.jpg', 139609, '.jpg', 'image/jpeg', 'photo', NULL, '2025-09-23 11:33:49'),
+(7, 11, '481071336_1114860143986043_6782195757044095901_n.jpg', 'C:\\Users\\Dhinotea\\work\\-\\back\\uploads\\teaching-sessions\\files-1758637159899-251533.jpg', 139609, '.jpg', 'image/jpeg', 'photo', NULL, '2025-09-23 14:19:19');
 
 -- --------------------------------------------------------
 
@@ -1176,27 +1209,27 @@ INSERT INTO `teaching_session_files` (`id`, `teaching_session_id`, `file_name`, 
 -- (See below for the actual view)
 --
 CREATE TABLE `teaching_session_overview` (
-`id` int(11)
-,`student_id` int(11)
-,`lesson_plan_id` int(11)
-,`subject_id` int(11)
-,`teaching_date` date
-,`start_time` time
-,`end_time` time
-,`duration_hours` decimal(25,4)
-,`class_level` varchar(50)
+`class_level` varchar(50)
 ,`class_room` varchar(50)
-,`student_count` int(11)
+,`created_at` timestamp
+,`duration_hours` decimal(25,4)
+,`end_time` time
+,`file_count` bigint(21)
+,`id` int(11)
+,`lesson_plan_id` int(11)
+,`lesson_plan_name` varchar(200)
 ,`lesson_topic` varchar(200)
 ,`self_rating` tinyint(1)
+,`start_time` time
 ,`status` enum('draft','submitted','reviewed')
-,`lesson_plan_name` varchar(200)
-,`subject_code` varchar(20)
-,`subject_name` varchar(200)
-,`student_name` varchar(201)
 ,`student_code` varchar(20)
-,`file_count` bigint(21)
-,`created_at` timestamp
+,`student_count` int(11)
+,`student_id` int(11)
+,`student_name` varchar(201)
+,`subject_code` varchar(20)
+,`subject_id` int(11)
+,`subject_name` varchar(200)
+,`teaching_date` date
 ,`updated_at` timestamp
 );
 
@@ -1258,7 +1291,7 @@ INSERT INTO `users` (`id`, `user_id`, `role`, `first_name`, `last_name`, `phone`
 (3, 'STD003', 'student', 'วิชัย', 'ขยันเรียน', '083-456-7890', 'wichai@email.com', '789 หมู่ 3 ตำบลหนองกระทุ่ม อำเภอเมือง จังหวัดนครราชสีมา', 'wichai_std', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', 'SCH003', '2025-09-17 11:15:27', '6401234569', 'คณะบริหารธุรกิจ', 'การจัดการทั่วไป', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (4, 'TCH001', 'teacher', 'อาจารย์สมศักดิ์', 'ใจสอน', '081-111-2222', 'somsak.teacher@email.com', '111 ถนนครูไทย ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'somsak_tch', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', 'SCH001', '2025-09-17 11:15:27', NULL, NULL, NULL, 'default-teacher.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (5, 'TCH002', 'teacher', 'อาจารย์วรรณา', 'รักการสอน', '082-222-3333', 'wanna.teacher@email.com', '222 ถนนศึกษา ตำบลสุรนารี อำเภอเมือง จังหวัดนครราชสีมา', 'ddd', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', 'SCH002', '2025-09-17 11:15:27', NULL, NULL, NULL, 'user_TCH002_1758179699919.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(6, 'TCH003', 'teacher', 'อาจารย์ประยุทธ', 'ดีใจสอน', '083-333-4444', 'prayuth.teacher@email.com', '333 ถนนการศึกษา ตำบลหนองกระทุ่ม อำเภอเมือง จังหวัดนครราชสีมา', 'prayuth_tch', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', 'SCH003', '2025-09-17 11:15:27', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(6, 'TCH003', 'teacher', 'อาจารย์ประยุทธ', 'ดีใจสอน', '083-333-4444', 'prayuth.teacher@email.com', '333 ถนนการศึกษา ตำบลหนองกระทุ่ม อำเภอเมือง จังหวัดนครราชสีมา', 'pppp', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', 'SCH003', '2025-09-17 11:15:27', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (7, 'SUP001', 'supervisor', 'ศาสตราจารย์ดร.วิโรจน์', 'นิเทศดี', '081-555-6666', 'wiroj.supervisor@email.com', '555 ถนนมหาวิทยาลัย ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'www', '$2b$10$FRFGRkVaNkjnjS8aCtL/COScf6NR9fv5m4gRvhGHf4brl7ZZmy2kK', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, 'user_SUP001_1758189240049.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (8, 'SUP002', 'supervisor', 'รองศาสตราจารย์ดร.สุนีย์', 'ดูแลดี', '082-666-7777', 'sunee.supervisor@email.com', '666 ถนนวิชาการ ตำบลสุรนารี อำเภอเมือง จังหวัดนครราชสีมา', 'sunee_sup', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (9, 'ADM001', 'admin', 'ผู้ดูแลระบบ', 'หลัก', '081-999-0000', 'admin@email.com', '999 ถนนเทคโนโลยี ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา', 'admin', '$2b$10$zKdfB4ORFjwiYnLQALUFhesTvikyMnXwttr15AODvy0zs9xcUQer.', NULL, '2025-09-17 11:15:27', NULL, NULL, NULL, 'user_ADM001_1758122215732.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -1271,7 +1304,8 @@ INSERT INTO `users` (`id`, `user_id`, `role`, `first_name`, `last_name`, `phone`
 (26, 'STD1000', 'student', 'asdas', 'dasd', NULL, 'sadas@sss.sss', NULL, 'asw', '$2b$10$532zEXhB8T2vtLdu8D9JwOgxvdqdBkP5HLy0bTfeyzFWPoR.Yo17.', NULL, '2025-09-18 10:13:02', '0850150020', 'asdas', 'asd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (27, 'STD1001', 'student', 'เอกชัย', 'ศรีวิชัย', '0850150023', 'aek@aek.aek', NULL, 'aek', '$2b$10$xG0zlr9QiKwfRDUekvhCRO1gRgoJeQ.OXvUKSBIPB2UICIgzw5oLi', NULL, '2025-09-23 10:20:14', '4456456465', 'ครุศาสตร์', 'ภาษาอังกฤษ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (28, 'STD1002', 'student', 'sad', 'asd', '0878975646', 'asd@sad.sss', NULL, 'swe', '$2b$10$Uo6Ni8eAjsFTFCGhG8xCye4KzhuKnmp8YPrEZAmNkj4rSw8nSCMye', NULL, '2025-09-23 11:40:57', '1234567456', 'ครุศาสตร์', 'บรรณารักษ์', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(29, 'STD1003', 'student', 'ฟกฟก', 'ฟหกฟหก', '0851516213', 'aeke@aeke.aeke', NULL, 'aeke', '$2b$10$EBKDhk5oKjS6J3d3SJ5BGuEBwhJT3aODCKnEGx2uAR2nLuxRxkA6K', NULL, '2025-09-23 12:08:35', '1478945613', 'ครุศาสตร์', 'บรรณารักษ์', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(29, 'STD1003', 'student', 'ฟกฟก', 'ฟหกฟหก', '0851516213', 'aeke@aeke.aeke', NULL, 'aeke', '$2b$10$EBKDhk5oKjS6J3d3SJ5BGuEBwhJT3aODCKnEGx2uAR2nLuxRxkA6K', NULL, '2025-09-23 12:08:35', '1478945613', 'ครุศาสตร์', 'บรรณารักษ์', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(30, 'STD1004', 'student', 'ฟหกฟห', 'กฟหฟหก', '0879875612', 'yyy@yyy.yyy', NULL, '999', '$2b$10$yG38j7KqVHhChl/q/QRgN.L3B9RTmn3s/w12kxvSk8tdO5yBs0OxC', NULL, '2025-09-23 14:17:36', '1234564490', 'ครุศาสตร์', 'บรรณารักษ์', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1657,19 +1691,19 @@ ALTER TABLE `backup_logs`
 -- AUTO_INCREMENT for table `chat_messages`
 --
 ALTER TABLE `chat_messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `completion_requests`
 --
 ALTER TABLE `completion_requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `conversations`
 --
 ALTER TABLE `conversations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `evaluation_criteria`
@@ -1687,13 +1721,13 @@ ALTER TABLE `evaluation_details`
 -- AUTO_INCREMENT for table `internship_assignments`
 --
 ALTER TABLE `internship_assignments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `lesson_plans`
 --
 ALTER TABLE `lesson_plans`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `lesson_plan_documents`
@@ -1705,7 +1739,7 @@ ALTER TABLE `lesson_plan_documents`
 -- AUTO_INCREMENT for table `lesson_plan_files`
 --
 ALTER TABLE `lesson_plan_files`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `lesson_plan_materials`
@@ -1771,7 +1805,7 @@ ALTER TABLE `student_teacher_conversations`
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `teaching_evaluations`
@@ -1789,13 +1823,13 @@ ALTER TABLE `teaching_materials`
 -- AUTO_INCREMENT for table `teaching_sessions`
 --
 ALTER TABLE `teaching_sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `teaching_session_files`
 --
 ALTER TABLE `teaching_session_files`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `teaching_time_slots`
@@ -1807,7 +1841,7 @@ ALTER TABLE `teaching_time_slots`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- Constraints for dumped tables
