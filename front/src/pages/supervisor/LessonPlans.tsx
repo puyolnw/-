@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { apiService } from '../../services/api';
 import LoggedLayout from '../../components/layouts/LoggedLayout';
-import { useAuth } from '../../hooks/useAuth';
 
 interface LessonPlanFile {
   id: number;
@@ -42,8 +41,6 @@ interface Subject {
 }
 
 const SupervisorLessonPlans: React.FC = () => {
-  const { user } = useAuth();
-  const [lessonPlans, setLessonPlans] = useState<LessonPlan[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -132,7 +129,7 @@ const SupervisorLessonPlans: React.FC = () => {
 
     // Filter by subject
     if (selectedSubject) {
-      filtered = filtered.filter(plan => plan.subject_id.toString() === selectedSubject);
+      filtered = filtered.filter(plan => plan.subject_code.toString() === selectedSubject);
     }
 
     // Filter by status

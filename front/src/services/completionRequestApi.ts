@@ -13,7 +13,7 @@ export interface CompletionRequest {
   challenges_faced?: string;
   skills_developed?: string;
   future_goals?: string;
-  status: 'pending' | 'under_review' | 'approved' | 'rejected' | 'revision_required';
+  status: 'pending' | 'under_review' | 'approved' | 'rejected' | 'revision_required' | 'supervisor_approved';
   teacher_comments?: string;
   teacher_rating?: number;
   teacher_reviewed_at?: string;
@@ -30,6 +30,9 @@ export interface CompletionRequest {
   student_first_name?: string;
   student_last_name?: string;
   student_code?: string;
+  student_name?: string;
+  faculty?: string;
+  major?: string;
 }
 
 export interface TeachingStats {

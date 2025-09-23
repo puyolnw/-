@@ -12,6 +12,7 @@ export interface TeachingSession {
   class_room?: string;
   student_count?: number;
   lesson_topic?: string;
+  lesson_summary?: string;
   learning_activities?: string;
   learning_outcomes?: string;
   teaching_methods_used?: string;
@@ -34,6 +35,7 @@ export interface TeachingSession {
   student_code?: string;
   file_count?: number;
   duration_minutes?: number;
+  files?: TeachingSessionFile[];
   created_at: string;
   updated_at: string;
 }

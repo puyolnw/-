@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { apiService } from '../../services/api';
 import LoggedLayout from '../../components/layouts/LoggedLayout';
-import { useAuth } from '../../hooks/useAuth';
+
+interface TeachingSessionFile {
+  id: number;
+  file_name: string;
+  file_path: string;
+  file_size: number;
+  uploaded_at: string;
+}
 
 interface TeachingSession {
   id: number;
@@ -31,6 +38,7 @@ interface TeachingSession {
   teacher_last_name: string;
   lesson_plan_name: string;
   school_name: string;
+  files?: TeachingSessionFile[];
 }
 
 interface Subject {
@@ -40,8 +48,6 @@ interface Subject {
 }
 
 const SupervisorTeachingSessions: React.FC = () => {
-  const { user } = useAuth();
-  const [teachingSessions, setTeachingSessions] = useState<TeachingSession[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -133,7 +139,7 @@ const SupervisorTeachingSessions: React.FC = () => {
 
     // Filter by subject
     if (selectedSubject) {
-      filtered = filtered.filter(session => session.subject_id.toString() === selectedSubject);
+      filtered = filtered.filter(session => session.subject_code.toString() === selectedSubject);
     }
 
     // Filter by status
