@@ -122,4 +122,15 @@ router.get('/users',
   getAllUsers
 );
 
+// Routes สำหรับนักเรียน
+router.get('/student/available-teachers',
+  authorizeRoles(['student']),
+  require('../controllers/studentController').getAvailableTeachers
+);
+
+router.get('/student/available-supervisors',
+  authorizeRoles(['student']),
+  require('../controllers/studentController').getAvailableSupervisors
+);
+
 module.exports = router;

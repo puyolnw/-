@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import LoggedLayout from '../../components/layouts/LoggedLayout';
 import { chatApiService, type Message, type Conversation } from '../../services/chatApi';
 import { useAuth } from '../../hooks/useAuth';
+import { apiService } from '../../services/api';
 
 const Messages: React.FC = () => {
   const { user } = useAuth();
@@ -15,6 +16,13 @@ const Messages: React.FC = () => {
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [searchParams] = useSearchParams();
+  
+  // New chat modal states
+  const [showNewChatModal, setShowNewChatModal] = useState(false);
+  const [availableTeachers, setAvailableTeachers] = useState<any[]>([]);
+  const [availableSupervisors, setAvailableSupervisors] = useState<any[]>([]);
+  const [loadingTeachers, setLoadingTeachers] = useState(false);
+  const [selectedChatType, setSelectedChatType] = useState<'teacher' | 'supervisor'>('teacher');
 
   useEffect(() => {
     fetchConversations();
@@ -72,6 +80,48 @@ const Messages: React.FC = () => {
       setError('เกิดข้อผิดพลาดในการดึงข้อมูลการสนทนา');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAvailableTeachers = async () => {
+    try {
+      setLoadingTeachers(true);
+      console.log('🔵 Frontend - Fetching available teachers...');
+      
+      // ดึงข้อมูลครูพี่เลี้ยงในโรงเรียนที่นักเรียนสังกัด
+      const response = await apiService.get('/chat/student/available-teachers');
+      console.log('🔵 Frontend - Available teachers response:', response);
+      
+      if (response.success && response.data) {
+        setAvailableTeachers(response.data);
+      } else {
+        console.error('Failed to fetch teachers:', response.message);
+      }
+    } catch (error) {
+      console.error('🔵 Frontend - Error fetching teachers:', error);
+    } finally {
+      setLoadingTeachers(false);
+    }
+  };
+
+  const fetchAvailableSupervisors = async () => {
+    try {
+      setLoadingTeachers(true);
+      console.log('🔵 Frontend - Fetching available supervisors...');
+      
+      // ดึงข้อมูลอาจารย์นิเทศ
+      const response = await apiService.get('/chat/student/available-supervisors');
+      console.log('🔵 Frontend - Available supervisors response:', response);
+      
+      if (response.success && response.data) {
+        setAvailableSupervisors(response.data);
+      } else {
+        console.error('Failed to fetch supervisors:', response.message);
+      }
+    } catch (error) {
+      console.error('🔵 Frontend - Error fetching supervisors:', error);
+    } finally {
+      setLoadingTeachers(false);
     }
   };
 
@@ -181,6 +231,57 @@ const Messages: React.FC = () => {
     }
   };
 
+  const handleNewChat = () => {
+    setShowNewChatModal(true);
+    setSelectedChatType('teacher');
+    // ดึงข้อมูลครูเมื่อเปิด modal
+    fetchAvailableTeachers();
+  };
+
+  const handleStartChat = async (userId: number, userName: string, userRole: string) => {
+    try {
+      setShowNewChatModal(false);
+      
+      // ตรวจสอบว่ามีการสนทนาอยู่แล้วหรือไม่
+      const existingConversation = conversations.find(conv => conv.other_user_id === userId);
+      
+      if (existingConversation) {
+        // ถ้ามีการสนทนาอยู่แล้ว ให้เลือกการสนทนานั้น
+        setSelectedConversation(existingConversation);
+        fetchMessages(userId);
+      } else {
+        // ถ้ายังไม่มีการสนทนา ให้สร้างการสนทนาใหม่
+        // โดยการส่งข้อความเริ่มต้น
+        const welcomeMessage = `สวัสดีครับ/ค่ะ ${userRole === 'teacher' ? 'คุณครู' : 'อาจารย์'} ${userName}`;
+        
+        const response = await chatApiService.sendMessage(userId, welcomeMessage);
+        if (response.success) {
+          // รีเฟรชรายการการสนทนา
+          await fetchConversations();
+          
+          // หาการสนทนาใหม่ที่เพิ่งสร้าง
+          const newConversation = conversations.find(conv => conv.other_user_id === userId);
+          if (newConversation) {
+            setSelectedConversation(newConversation);
+            fetchMessages(userId);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error starting chat:', error);
+      alert('เกิดข้อผิดพลาดในการเริ่มการสนทนา');
+    }
+  };
+
+  const handleChatTypeChange = (type: 'teacher' | 'supervisor') => {
+    setSelectedChatType(type);
+    if (type === 'teacher') {
+      fetchAvailableTeachers();
+    } else {
+      fetchAvailableSupervisors();
+    }
+  };
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -216,8 +317,21 @@ const Messages: React.FC = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">กล่องข้อความ</h1>
-            <p className="mt-2 text-gray-600">ติดต่อสื่อสารกับครูพี่เลี้ยงและอาจารย์ผู้นิเทศ</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">กล่องข้อความ</h1>
+                <p className="mt-2 text-gray-600">ติดต่อสื่อสารกับครูพี่เลี้ยงและอาจารย์ผู้นิเทศ</p>
+              </div>
+              <button
+                onClick={handleNewChat}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                แชทใหม่
+              </button>
+            </div>
           </div>
 
           {error && (
@@ -446,6 +560,135 @@ const Messages: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* New Chat Modal */}
+      {showNewChatModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-medium text-gray-900">เริ่มการสนทนาใหม่</h3>
+                <button
+                  onClick={() => setShowNewChatModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Chat Type Selection */}
+              <div className="mb-6">
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => handleChatTypeChange('teacher')}
+                    className={`flex-1 px-4 py-3 rounded-lg border-2 transition-colors ${
+                      selectedChatType === 'teacher'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-center space-x-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <span className="font-medium">ครูพี่เลี้ยง</span>
+                    </div>
+                    <p className="text-sm mt-1 text-gray-500">ครูในโรงเรียนที่คุณสังกัด</p>
+                  </button>
+                  
+                  <button
+                    onClick={() => handleChatTypeChange('supervisor')}
+                    className={`flex-1 px-4 py-3 rounded-lg border-2 transition-colors ${
+                      selectedChatType === 'supervisor'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-center space-x-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span className="font-medium">อาจารย์นิเทศ</span>
+                    </div>
+                    <p className="text-sm mt-1 text-gray-500">อาจารย์ผู้นิเทศจากมหาวิทยาลัย</p>
+                  </button>
+                </div>
+              </div>
+
+              {/* User List */}
+              <div className="max-h-96 overflow-y-auto">
+                {loadingTeachers ? (
+                  <div className="flex justify-center items-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <span className="ml-3 text-gray-600">กำลังโหลด...</span>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {(selectedChatType === 'teacher' ? availableTeachers : availableSupervisors).map((person) => (
+                      <div
+                        key={person.id}
+                        onClick={() => handleStartChat(
+                          person.id, 
+                          `${person.first_name} ${person.last_name}`,
+                          selectedChatType
+                        )}
+                        className="flex items-center space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors"
+                      >
+                        <div className="flex-shrink-0">
+                          <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900">
+                            {person.first_name} {person.last_name}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {selectedChatType === 'teacher' ? 'ครูพี่เลี้ยง' : 'อาจารย์นิเทศ'}
+                            {person.school_name && ` • ${person.school_name}`}
+                          </p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {(selectedChatType === 'teacher' ? availableTeachers : availableSupervisors).length === 0 && (
+                      <div className="text-center py-8 text-gray-500">
+                        <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <p className="mt-2">
+                          {selectedChatType === 'teacher' 
+                            ? 'ไม่พบครูพี่เลี้ยงในโรงเรียนที่คุณสังกัด' 
+                            : 'ไม่พบอาจารย์นิเทศ'
+                          }
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setShowNewChatModal(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
+                >
+                  ยกเลิก
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </LoggedLayout>
   );
 };
